@@ -9,7 +9,9 @@ SECTIONS
 
 	.text :											/* The section for the code part of the binary */
 	{
-		*(.text)									/* We indicate that the code is before data such as strings */
+		*(.text)									/* The code is before data
 		*(.bss)										/* We put the data after the code */
+		*(.data)
+		*(.rodata)
 	}	
 }
