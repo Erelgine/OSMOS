@@ -8,7 +8,8 @@ MAKEFLAGS		   += --silent
 SHELL			   := /bin/bash
 
 # Project binary requisites:
-PROJECT_REQUISITES	= realpath nasm ld gcc g++ qemu-system-i386 gdb
+PROJECT_ARCH		= i386
+PROJECT_REQUISITES	= realpath nasm ld gcc g++ qemu-system-$(PROJECT_ARCH) gdb
 
 # Project settings for OSMOS:
 FOLDER_SOURCE		= src
