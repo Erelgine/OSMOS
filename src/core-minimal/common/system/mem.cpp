@@ -19,10 +19,11 @@
 #include "mem.hpp"
 
 #include "../../boot.hpp"
+#include "../../io/vga_display.hpp" // DEBUG
 
 // For function descriptions, see boot.hpp
 
-const uint_32 System::Memory::BASE_BLOCK_ALLOCATION = 0x00100000; // 128K after 0x0
+const uint_32 System::Memory::BASE_BLOCK_ALLOCATION = 0x001FFFFF; // 128K after 0x0
 
 void System::Memory::set(uint_8 *trg, uint_8 val, int size) {
 	for (int i = 0; i < size; i++)
@@ -44,76 +45,20 @@ void System::Memory::copy(char *trg, char *src, int size) {
 		trg[i] = src[i];
 }
 
-void* System::Memory::getAvailableBlock(uint_8 blocksize, System::Memory::Block *currentBlock, System::Memory::Block *lastBlock __attribute__((unused))) {
-	uint_32 size = (2 ^ blocksize) - sizeof(System::Memory::Block);
-	currentBlock = (System::Memory::Block *) BASE_BLOCK_ALLOCATION;
-	bool found = false;
-
-	while (currentBlock->magic != 0xB10C && currentBlock->blockSize < size) {
-		lastBlock = currentBlock;
-		currentBlock = (System::Memory::Block *) currentBlock->next;
-		found = true;
-	}
-
-	return (found ? currentBlock + currentBlock->dataPointer + sizeof(System::Memory::Block) : 0); // sizeof(System::Memory::Block) = block size
+void* System::Memory::findAvailableBlock(uint_8 blocksize, System::Memory::Block *currentBlock, System::Memory::Block *lastBlock __attribute__((unused))) {
+	// TODO: Write code for function
 }
 
-void* System::Memory::findBlock(void* pointer) {
-	System::Memory::Block *currentBlock = (System::Memory::Block *) BASE_BLOCK_ALLOCATION;
-	bool found = false;
-
-	while (!(currentBlock->magic == 0xB10C && currentBlock < pointer)) {
-		currentBlock = (System::Memory::Block *) currentBlock->next;
-		found = true;
-	}
-	
-	return (found ? currentBlock + currentBlock->dataPointer + sizeof(System::Memory::Block) : 0); // sizeof(System::Memory::Block) = block size	
+void* System::Memory::findBlock(void *pointer) {
+	// TODO: Write code for function
 }
 
 void* System::Memory::allocateBlock(uint_32 size) {
-	uint_32 blocksize = 0;
-
-	for (int s = 7; s < 32; s++) {
-		uint_32 cblocksize = (2 ^ s) - sizeof(System::Memory::Block); // sizeof(System::Memory::Block) = block size
-		if (size < cblocksize) {
-			blocksize = s;
-			break;
-		}
-	}
-
-	if (blocksize == 0)
-		return (void *) 0x00000000;
-
-	System::Memory::Block *avBlock;
-	System::Memory::Block *parentBlock;
-	void *ptr = System::Memory::getAvailableBlock(blocksize, avBlock, parentBlock);
-
-	if ((uint_32) avBlock > 0x00000000)
-		return (void *) 0x00000000; // no block available
-
-	if (avBlock->magic != 0xB10C) { // doesn't exists
-		avBlock->magic = 0xB10C;
-		avBlock->blockSize = blocksize;
-		avBlock->dataPointer = sizeof(System::Memory::Block);
-		if ((uint_32) parentBlock > 0x00000000)
-			parentBlock->next = (uint_32) avBlock;
-	} else // exists
-		avBlock->dataPointer += size;
-
-	return ptr;
+	// TODO: Write code for function
 }
 
 void System::Memory::freeBlock(void *ptr, uint_32 size) {
-	System::Memory::Block *currentBlock = (System::Memory::Block *) BASE_BLOCK_ALLOCATION;
-	bool found = false;
-
-	while ((uint_32) currentBlock < (uint_32) ptr) {
-		System::Memory::Block *currentBlock = (System::Memory::Block *) currentBlock->next;
-		found = true;
-	}
-
-	if (found)
-		currentBlock->dataPointer -= (2 ^ currentBlock->blockSize) - sizeof(System::Memory::Block) - size;
+	// TODO: Write code for function
 }
 
 void* operator new(uint_32 size)

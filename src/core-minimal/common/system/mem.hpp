@@ -37,8 +37,8 @@ namespace System {
 		static void set(uint_16 *dst, uint_16 val, int size);							// Same, but with 16-bit size
 		static void set(uint_32 *dst, uint_32 val, int size);							// Same, but with 32-bit size
 		static void copy(char *dst, char *src, int size);								// Copies the memory from beg -> beg + size with src
-		static void* getAvailableBlock(uint_8 blocksize, System::Memory::Block *block, System::Memory::Block *parentBlock);
-		static void* findBlock(void* pointer);
+		static void* findAvailableBlock(uint_8 blocksize, System::Memory::Block *block, System::Memory::Block *parentBlock);
+		static void* findBlock(void *pointer);
 		static void* allocateBlock(uint_32 size);
 		static void freeBlock(void *ptr, uint_32 size);
 	};

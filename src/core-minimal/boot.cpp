@@ -217,6 +217,11 @@ void kboot(uint_32 magic, uint_32 table_address) {
 	// TODO: test new and delete functions (may be buggy)
 	IO::VGADisplay::putString("Allocating a 4K chunk: ", 0x7, 0x0);
 	void *blkptr = System::Memory::allocateBlock(4096);
+	if (!blkptr) {
+		IO::VGADisplay::putString("fail", 0xC, 0x0);
+		while (true);
+	}
+
 	IO::VGADisplay::putInteger((uint_32) blkptr, 16, 0xF, 0x0);
 
 	System::Memory::freeBlock(blkptr, 4096);
