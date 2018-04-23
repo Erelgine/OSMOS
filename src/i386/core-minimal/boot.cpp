@@ -16,7 +16,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "osmos/osmos.hpp"
+
 extern "C"
 void kboot(uint32_t magic, uint32_t table_address) {
-	
+	asm("jmp $");
 }
