@@ -22,7 +22,7 @@
 
 // For function descriptions, see boot.hpp
 
-const uint_32 System::Memory::BASE_BLOCK_ALLOCATION = 0x00050000; // 128K after 0x0
+const uint_32 System::Memory::BASE_BLOCK_ALLOCATION = 0x00100000; // 128K after 0x0
 
 void System::Memory::set(uint_8 *trg, uint_8 val, int size) {
 	for (int i = 0; i < size; i++)
@@ -49,7 +49,7 @@ void* System::Memory::getAvailableBlock(uint_8 blocksize, System::Memory::Block 
 	currentBlock = (System::Memory::Block *) BASE_BLOCK_ALLOCATION;
 	bool found = false;
 
-	while (!(currentBlock->magic == 0xB10C && currentBlock->blockSize < size)) {
+	while (currentBlock->magic != 0xB10C && currentBlock->blockSize < size) {
 		lastBlock = currentBlock;
 		currentBlock = (System::Memory::Block *) currentBlock->next;
 		found = true;

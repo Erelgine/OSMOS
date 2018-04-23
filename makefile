@@ -8,7 +8,7 @@ MAKEFLAGS		   += --silent
 SHELL			   := /bin/bash
 
 # Project binary requisites:
-PROJECT_REQUISITES	= realpath nasm ld gcc g++ qemu-system-i386
+PROJECT_REQUISITES	= realpath nasm ld gcc g++ qemu-system-i386 gdb
 
 # Project settings for OSMOS:
 FOLDER_SOURCE		= src
@@ -23,7 +23,7 @@ workspace.check:
 	# Check for missing programs
 	for REQUISITE in $(PROJECT_REQUISITES); do \
 		echo -ne "Checking $$REQUISITE... "; \
-		if hash $$REQUISITE 1>/dev/null; then \
+		if hash $$REQUISITE 1>>/dev/null 2>>/dev/null; then \
 			echo -e "found"; \
 		else \
 			echo -e "not found\nYou can find and install the specific package by using the distribution's package manager (usually apt(itude), pacman, or yum, with administrator privileges)"; \
@@ -182,9 +182,6 @@ build.image.grub:
 
 run:
 	# Runs GDT and the QEMU emulator
-	cd src;
 	qemu-system-i386 -S -m 128M -k fr -hda ./$(FOLDER_BINARY)/hdd.img -gdb tcp::23583 & \
 	gdb -ex "target remote localhost:23583" \
 		-ex "symbol-file $(FOLDER_BINARY)/core-minimal/boot.bin" \
-		-ex "break kboot";
-	cd ..;

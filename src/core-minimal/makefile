@@ -18,7 +18,7 @@ ASMFLAGS			= -f elf32
 LD					= x86_64-linux-gnu-ld
 LDFLAGS				= -g -melf_i386
 CXX					= x86_64-linux-gnu-g++
-CXXFLAGS			= -g -ffreestanding -O2 -Wall -Wextra -fno-exceptions -masm=intel -m32
+CXXFLAGS			= -g -ffreestanding -O2 -Wall -Wextra -fno-exceptions -nostdlib -fno-builtin -fno-rtti -masm=intel -m32
 
 # Auto-generated variables, DON'T TOUCH !
 SOURCE_FILES		= $(shell find . -name '*.cpp')
