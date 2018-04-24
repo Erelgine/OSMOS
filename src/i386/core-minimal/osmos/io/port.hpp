@@ -1,5 +1,5 @@
 /*
- * The OSMOS header
+ * The I/O port communication class
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OSMOS_HPP
-#define OSMOS_HPP
+#ifndef PORT_HPP
+#define PORT_HPP
 
-/* Defining standard types */
-typedef unsigned char				uint8_t;
-typedef unsigned short				uint16_t;
-typedef unsigned int				uint32_t;
-typedef unsigned long				uint64_t;
+#include "../osmos.hpp"
 
-typedef signed char					int8_t;
-typedef signed short				int16_t;
-typedef signed int					int32_t;
-typedef signed long					int64_t;
+namespace OSMOS {
+	namespace IO {
+		class Port {
+		public:
+			static void in(uint16_t port, uint8_t *value); /* Inputs a byte */
+			static void in(uint16_t port, uint16_t *value); /* Inputs a word */
+			static void in(uint16_t port, uint32_t *value); /* Inputs a dword */
+
+			static void out(uint16_t port, uint8_t value); /* Outputs a byte */
+			static void out(uint16_t port, uint16_t value); /* Outputs a word */
+			static void out(uint16_t port, uint32_t value); /* Outputs a dword */
+		};
+	};
+};
 
 #endif
