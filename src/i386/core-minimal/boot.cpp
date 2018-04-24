@@ -1,5 +1,5 @@
 /*
- * The version definition for the core-minimal kernel
+ * The boot file, main point of OSMOS.
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify
@@ -13,17 +13,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef VERSION_H
-#define VERSION_H
 
-/***
- * :
- ***/
-#define VERSION_CODENAME			"Hedgehog"
-#define VERSION_MAJOR				0
-#define VERSION_MINOR				0
-#define VERSION_MODIFICATION		100
+#include "osmos/osmos.hpp"
 
-#endif
+extern "C"
+void kboot(uint32_t magic, uint32_t table_address) {
+	asm("jmp $");
+}

@@ -1,4 +1,4 @@
-; The top of the boot file to start the core-minimal kernel from GRUB 2.
+; The base file, a bridge from Assembly to C(++)
 ; Copyright (C) 2018 Alexis BELMONTE
 ;
 ; This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-; The multiboot2 header. Absolutely necessary in order to tell to GRUB that it is a valid
+; The multiboot2 header, necessary in order to tell to GRUB that it is a valid
 ; boot binary. Labels are lowercase while variables/data are UPPERCASE.
 
 section .multiboot
