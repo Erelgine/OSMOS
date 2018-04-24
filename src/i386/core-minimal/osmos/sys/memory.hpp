@@ -42,15 +42,15 @@ namespace OSMOS {
 				uint32_t free; // The number of bytes remaining in the block (size - used)
 			} __attribute__((packed));
 
-			static void fill(uint8_t *ptr, uint32_t count, uint8_t val);
-			static void fill(uint16_t *ptr, uint32_t count, uint16_t val);
-			static void fill(uint32_t *ptr, uint32_t count, uint32_t val);
-			static void fill(uint64_t *ptr, uint32_t count, uint64_t val);
+			static void fill(uint8_t *ptr, uint32_t count, uint8_t val); // Fills from ptr to ptr+count with a byte wide val
+			static void fill(uint16_t *ptr, uint32_t count, uint16_t val); // Fills from ptr to ptr+count with a word wide val
+			static void fill(uint32_t *ptr, uint32_t count, uint32_t val); // Fills from ptr to ptr+count with a dword wide val
+			static void fill(uint64_t *ptr, uint32_t count, uint64_t val); // Fills from ptr to ptr+count with a qword wide val
 
-			static void copy(uint8_t *target, uint8_t *source, uint32_t count);
-			static void copy(uint16_t *target, uint16_t *source, uint32_t count);
-			static void copy(uint32_t *target, uint32_t *source, uint32_t count);
-			static void copy(uint64_t *target, uint64_t *source, uint32_t count);
+			static void copy(uint8_t *target, uint8_t *source, uint32_t count); // Copies from ptr to ptr+count with a byte wide val
+			static void copy(uint16_t *target, uint16_t *source, uint32_t count); // Copies from ptr to ptr+count with a word wide val
+			static void copy(uint32_t *target, uint32_t *source, uint32_t count); // Copies from ptr to ptr+count with a dword wide val
+			static void copy(uint64_t *target, uint64_t *source, uint32_t count); // Copies from ptr to ptr+count with a qword wide val
 		};
 	};
 };
