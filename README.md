@@ -1,10 +1,10 @@
 # OSMOS
 ## Description
-The Open Source Multitasking Operating System (OSMOS) that aims to be fast, lightweight, and open-source for everyone. It's goal is to be runnable by any platform from various low and high configurations and flexible to get most out of your computer.
+The Open Source Multitasking Operating System (The OSMOS) that aims to be fast, lightweight, and open-source for everyone. It's goal is to be runnable by any platform from various low and high configurations and flexible to get most out of your computer.
 
 ## Project design
 ### Name
-The operating system should be called "The OSMOS", but you can call it "OSMOS", for short; we won't blame you for that. But, please use "The OSMOS" in order to differenciate the kernel from the operating system which is called "OSMOS".
+The operating system should be called "The OSMOS", so please use "The OSMOS" in order to differenciate it from the kernel itself which is called "OSMOS".
 
 ### Development and project organization
 The OSMOS is using simple tools and programming languages such as Intel syntax for both `nasm` and `g++`'s inline assembly. It is organized to group by architecture, but only one is present for the moment; which is the `i386` generation of processors. The OSMOS targets to be an multi-architecture kernel and operating system.
@@ -14,7 +14,7 @@ The OSMOS is using simple tools and programming languages such as Intel syntax f
 `realpath`, `nasm`, `ld`, `gcc/g++`, `qemu-system-<arch>`, and `gdb` are required in order to build the operating system. You can download and install them by using your distribution's package manager. If you do not know what it is or what does the distribution uses, you shouldn't build OSMOS for now, and instead learn with your distribution's provided documentation or tutorials available on your favorite search engine.
 
 ## Downloading the project
-In order to download this project, you need to choose a spot for the project folder. Do not worry, you don't need to create a folder for the project as `git` already does make a folder for the project. Launch a terminal, go to the folder you want to store the project (such as the Desktop with the `cd` command) and then type `git clone https://github.com/Sixestla/OSMOS.git --recursive` into the terminal. You should normally get the entire project without losing something.
+In order to download this project, you need to choose a spot for the project folder. Do not worry, you don't need to create a folder for the project as `git` already does make a folder for the project. Launch a terminal, go to the folder you want to store the project (such as the Desktop with the `cd` command) and then type `git clone https://github.com/Sixestla/OSMOS.git --recursive` into the terminal. You should normally download the entire project without losing something.
 
 ## Setting up the workspace
 In order to setup everything, the `Makefile` needs to create and configure every needed file in order to then build and execute the project. Go to the OSMOS folder (using the `cd` command) and type it in `make setup`. It should normally check if every dependency/requisite is installed properly and constructs a binary folder while generating a virtual hard-disk image called `hdd.img` that will be placed in `bin/<arch>/hdd.img`.
