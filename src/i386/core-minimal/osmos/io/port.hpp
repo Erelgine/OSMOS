@@ -22,18 +22,52 @@
 #include "../osmos.hpp"
 
 namespace OSMOS {
-	namespace IO {
-		class Port {
-		public:
-			static void in(uint16_t port, uint8_t *value); /* Inputs a byte */
-			static void in(uint16_t port, uint16_t *value); /* Inputs a word */
-			static void in(uint16_t port, uint32_t *value); /* Inputs a dword */
-
-			static void out(uint16_t port, uint8_t value); /* Outputs a byte */
-			static void out(uint16_t port, uint16_t value); /* Outputs a word */
-			static void out(uint16_t port, uint32_t value); /* Outputs a dword */
-		};
-	};
+    namespace IO {
+        /**
+         * Port's class that contains functions for input/output
+         * operations on the hardware
+         */
+        class Port {
+        public:
+        	/**
+             * Receives a byte-sized value from port
+             * @param port the port to communicate
+             * @param value the value pointer to assign
+             */
+            static void in(uint16_t port, uint8_t *value);
+            /**
+             * Receives a word-sized value from port
+             * @param port the port to communicate
+             * @param value the value pointer to assign
+             */
+            static void in(uint16_t port, uint16_t *value);
+            /**
+             * Receives a double word-sized value from port
+             * @param port the port to communicate
+             * @param value the value pointer to assign
+             */
+            static void in(uint16_t port, uint32_t *value);
+            
+			/**
+             * Sends a byte-sized value from port
+             * @param port the port to communicate
+             * @param value the value to send
+             */
+            static void out(uint16_t port, uint8_t value);
+            /**
+             * Sends a word-sized value from port
+             * @param port the port to communicate
+             * @param value the value to send
+             */
+            static void out(uint16_t port, uint16_t value);
+			/**
+             * Sends a double word-sized value from port
+             * @param port the port to communicate
+             * @param value the value to send
+             */
+            static void out(uint16_t port, uint32_t value);
+        };
+    };
 };
 
 #endif
