@@ -1,5 +1,5 @@
 /*
- * The OSMOS header, for all sub-files.
+ * The OSMOS header
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 #ifndef OSMOS_HPP
 #define OSMOS_HPP
 
+// Global type definitions
 typedef unsigned char				uint8_t;
 typedef unsigned short				uint16_t;
 typedef unsigned int				uint32_t;
@@ -28,5 +29,8 @@ typedef signed char					int8_t;
 typedef signed short				int16_t;
 typedef signed int					int32_t;
 typedef signed long					int64_t;
+
+// Processor specific address size
+typedef uint32_t                    address_t;
 
 #endif

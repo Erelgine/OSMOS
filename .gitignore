@@ -1,2 +1,3 @@
-bin/
-src/.setup_lock
+/nbproject
+/bin
+.setup_lock

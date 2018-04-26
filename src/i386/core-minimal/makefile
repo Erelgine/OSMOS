@@ -41,7 +41,7 @@ build.base:
 	done;
 	echo -e "mkdir done";
 
-	echo -en "Building kernel base...\nBuilding base";
+	echo -en "Building kernel base...\n";
 	$(ASM) base.asm -o $(FOLDER_BINARY)/core-minimal/base.elf $(ASMFLAGS);
 	echo -e "$(FOLDER_SOURCE)/core-minimal/base.asm (assembled)";
 
