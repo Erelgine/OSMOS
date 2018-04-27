@@ -19,6 +19,7 @@
 #include "osmos/osmos.hpp"
 
 #include "osmos/io/port.hpp"
+#include "osmos/sys/memory.hpp"
 
 extern "C"
 void kboot(uint32_t magic, uint32_t table_address) {
@@ -30,9 +31,6 @@ void kboot(uint32_t magic, uint32_t table_address) {
     OSMOS::IO::Port::out((uint16_t) 0x3F8 + 2, (uint8_t) 0xC7);
     OSMOS::IO::Port::out((uint16_t) 0x3F8 + 4, (uint8_t) 0x0B);
 
-    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) 'H');
-    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) 'i');
-    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '!');
-    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '\n');
-    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '\r');    
+    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) 'K');
+    OSMOS::System::Memory::initialize();
 }

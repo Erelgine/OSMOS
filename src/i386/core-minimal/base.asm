@@ -63,3 +63,7 @@ _start:
 ; It didn't work again, so we restart to the beggining
     jmp .end
 ; And if it DIDN'T work, the CPU is bad :(
+
+global _eof
+_eof:
+; The EOF section, only for the base Memory allocator

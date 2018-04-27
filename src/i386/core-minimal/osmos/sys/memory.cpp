@@ -18,6 +18,10 @@
 
 #include "memory.hpp"
 
+#include "../io/port.hpp"
+
+address_t OSMOS::System::Memory::BLOCK_BASE_ADDRESS         = 0;
+
 uint16_t OSMOS::System::Memory::BLOCK_MAGIC_VALUE           = 0xB6A0;
 
 uint8_t OSMOS::System::Memory::BLOCK_STATUS_USED            = 0b0001;
@@ -25,6 +29,12 @@ uint8_t OSMOS::System::Memory::BLOCK_STATUS_RESERVED        = 0b0010;
 
 uint8_t OSMOS::System::Memory::BLOCK_TYPE_DATA              = 0b0100;
 uint8_t OSMOS::System::Memory::BLOCK_TYPE_CODE              = 0b1000;
+
+void OSMOS::System::Memory::initialize() {
+    asm("mov %[address], [_eof]"
+       :
+       : [address] "a" (OSMOS::System::Memory::BLOCK_BASE_ADDRESS));
+}
 
 void OSMOS::System::Memory::fill(uint8_t *ptr, address_t size, uint8_t val) {
     for (uint32_t i = 0; i < size; i++)
@@ -84,6 +94,10 @@ bool OSMOS::System::Memory::isData(OSMOS::System::Memory::Block *block) {
 
 bool OSMOS::System::Memory::isCode(OSMOS::System::Memory::Block *block) {
     return OSMOS::System::Memory::isValid(block) && (block->flags & OSMOS::System::Memory::BLOCK_TYPE_CODE);
+}
+
+address_t OSMOS::System::Memory::findAvailableBlock() {
+    // TODO: Implement this functions
 }
 
 uint64_t OSMOS::System::Memory::getSize(OSMOS::System::Memory::Block *block) {

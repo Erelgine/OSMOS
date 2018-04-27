@@ -4,19 +4,27 @@
 #
 
 # Global settings for Make and it's interpreter:
-MAKEFLAGS           += --silent
-SHELL               := /bin/bash
+MAKEFLAGS             += --silent
+SHELL                 := /bin/bash
 
 # Project binary requisites:
-PROJECT_ARCH        = i386
-PROJECT_BASE        = $(shell pwd)
-PROJECT_REQUISITES    = realpath nasm ld gcc g++ qemu-system-$(PROJECT_ARCH) gdb
+PROJECT_ARCH           = i386
+PROJECT_BASE           = $(shell pwd)
+PROJECT_REQUISITES     = realpath nasm ld gcc g++ qemu-system-$(PROJECT_ARCH) gdb
 
 # Project settings for OSMOS:
-FOLDER_SOURCE        = $(PROJECT_BASE)/src/$(PROJECT_ARCH)
-FOLDER_BINARY        = $(PROJECT_BASE)/bin/$(PROJECT_ARCH)
-FOLDER_VDRIVE        = /media/osmos-hdd
-FOLDER_VLOOP        = /dev/loop0
+FOLDER_SOURCE          = $(PROJECT_BASE)/src/$(PROJECT_ARCH)
+FOLDER_BINARY          = $(PROJECT_BASE)/bin/$(PROJECT_ARCH)
+FOLDER_VDRIVE          = /media/osmos-hdd
+FOLDER_VLOOP           = /dev/loop0
+
+# Project compiler settings:
+ASM                    = nasm
+ASMFLAGS               = -f elf32
+LD                     = x86_64-linux-gnu-ld
+LDFLAGS                = -g -melf_i386
+CXX                    = x86_64-linux-gnu-g++
+CXXFLAGS               = -g -ffreestanding -O2 -Wall -Wextra -fno-exceptions -nostdlib -fno-builtin -fno-rtti -masm=intel -m32 -Wl,-melf_i386
 
 # Making defined variables global
 export PROJECT_ARCH
@@ -26,6 +34,13 @@ export FOLDER_SOURCE
 export FOLDER_BINARY
 export FOLDER_VDRIVE
 export FOLDER_VLOOP
+
+export ASM
+export ASMFLAGS
+export LD
+export LDFLAGS
+export CXX
+export CXXFLAGS
 
 # Default recipe (when using "make" without arguments)
 all: workspace.check build.all run

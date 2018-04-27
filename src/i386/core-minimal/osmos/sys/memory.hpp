@@ -30,7 +30,18 @@ namespace OSMOS {
          * <b>delete<b> for variables and arrays
          */
         class Memory {
+        private:
+            /**
+             * The base address of the memory block allocation
+             */
+            static address_t BLOCK_BASE_ADDRESS;
+            
         public:
+            /**
+             * Initializes the Memory class
+             */
+            static void initialize();
+            
             /**
              * The <i>used</i> status indicates that the block is used by the kernel
              * or userspace and cannot be allocated, unless it is freed
@@ -191,6 +202,13 @@ namespace OSMOS {
              * negative value if the block contains other than code
              */
             static bool isCode(OSMOS::System::Memory::Block *block);
+            
+            /**
+             * Finds an available block for allocation
+             * @return the address of the available block ready to be casted
+             */
+            address_t findAvailableBlock();
+            
             /**
              * Gets the size of the given block
              * @param block the block to access

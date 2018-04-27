@@ -7,14 +7,6 @@
 MAKEFLAGS                   += --silent
 SHELL                       := /bin/bash
 
-# Project compiler settings:
-ASM                          = nasm
-ASMFLAGS                     = -f elf32
-LD                           = x86_64-linux-gnu-ld
-LDFLAGS                      = -g -melf_i386
-CXX                          = x86_64-linux-gnu-g++
-CXXFLAGS                     = -g -ffreestanding -O2 -Wall -Wextra -fno-exceptions -nostdlib -fno-builtin -fno-rtti -masm=intel -m32
-
 # Auto-generated variables, DON'T TOUCH !
 CPP_SOURCE_FILES             = $(shell find . -name '*.cpp' -printf "$(FOLDER_SOURCE)/core-minimal/%p ")
 ASM_SOURCE_FILES             = $(shell find . -name '*.asm' -printf "$(FOLDER_SOURCE)/core-minimal/%p ")
