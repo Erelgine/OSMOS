@@ -75,7 +75,7 @@ workspace.generate:
 	echo -e "done";
 
 	# Create the file in order to check later if the setup was already done
-	touch ./.setup_lock;
+	touch $(FOLDER_SOURCE)/.setup_lock;
 
 	echo -e "Workspace ready.";
 

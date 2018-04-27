@@ -8,18 +8,22 @@ MAKEFLAGS		   += --silent
 SHELL			   := /bin/bash
 
 # Project compiler settings:
-ASM					= nasm
-ASMFLAGS			= -f elf32
-LD					= x86_64-linux-gnu-ld
-LDFLAGS				= -g -melf_i386
-CXX					= x86_64-linux-gnu-g++
-CXXFLAGS			= -g -ffreestanding -O2 -Wall -Wextra -fno-exceptions -nostdlib -fno-builtin -fno-rtti -masm=intel -m32
+ASM                         = nasm
+ASMFLAGS                    = -f elf32
+LD                          = x86_64-linux-gnu-ld
+LDFLAGS                     = -g -melf_i386
+CXX                         = x86_64-linux-gnu-g++
+CXXFLAGS                    = -g -ffreestanding -O2 -Wall -Wextra -fno-exceptions -nostdlib -fno-builtin -fno-rtti -masm=intel -m32
 
 # Auto-generated variables, DON'T TOUCH !
-SOURCE_FILES		= $(shell find . -name '*.cpp')
-OUTPUT_FILES		= $(subst ./,$(FOLDER_BINARY)/core-minimal//,$(subst .cpp,.elf,$(SOURCE_FILES)))
-SOURCE_FOLDERS		= $(shell find . -mindepth 1 -type d)
-OUTPUT_FOLDERS		= $(subst ./,$(FOLDER_BINARY)/core-minimal//,$(SOURCE_FOLDERS))
+CPP_SOURCE_FILES            = $(shell find . -name '*.cpp' -printf "$(FOLDER_SOURCE)/core-minimal/%p ")
+ASM_SOURCE_FILES	    = $(shell find . -name '*.asm' -printf "$(FOLDER_SOURCE)/core-minimal/%p ")
+
+CPP_OUTPUT_FILES	    = $(subst .cpp,.elf,$(subst $(FOLDER_SOURCE),$(FOLDER_BINARY),$(CPP_SOURCE_FILES)))
+ASM_OUTPUT_FILES	    = $(subst .asm,.elf,$(subst $(FOLDER_SOURCE),$(FOLDER_BINARY),$(ASM_SOURCE_FILES)))
+
+SOURCE_FOLDERS              = $(shell find . -mindepth 1 -type d)
+OUTPUT_FOLDERS              = $(subst ./,$(FOLDER_BINARY)/core-minimal/,$(SOURCE_FOLDERS))
 
 # The default recipe ran if the makefile is called from command-line
 default:
@@ -37,24 +41,36 @@ build.clean:
 build.base:
 	echo -en "Generating binary folders... ";
 	for OUTPUT_FOLDER in $(OUTPUT_FOLDERS); do \
-		mkdir $$OUTPUT_FOLDER; \
+	    mkdir $$OUTPUT_FOLDER; \
 	done;
 	echo -e "mkdir done";
 
-	echo -en "Building kernel base...\n";
-	$(ASM) base.asm -o $(FOLDER_BINARY)/core-minimal/base.elf $(ASMFLAGS);
-	echo -e "$(FOLDER_SOURCE)/core-minimal/base.asm (assembled)";
-
-	for SOURCE_FILE in $(SOURCE_FILES); do \
-		SPASS=$${SOURCE_FILE/.cpp/.elf}; \
-		SRESU="$$(echo $(CXX) -o "$${SPASS/.\//$(FOLDER_BINARY)/core-minimal/\/}" -c $$SOURCE_FILE $(CXXFLAGS))"; \
-		FPASS="$$(echo $${SOURCE_FILE/.\//})"; \
-		FNAME="$$(echo $${FPASS/.cpp/})"; \
-		$$SRESU; \
-		echo -e "$(FOLDER_SOURCE)/core-minimal/$$SOURCE_FILE (compiled)"; \
+	echo -e "Building kernel base...";
+	for SOURCE_FILE in $(ASM_SOURCE_FILES); do \
+	    SOURCE_FILE="$$(echo $${SOURCE_FILE/.\//})"; \
+	    __OUTPUT_FILE="$$(echo $${SOURCE_FILE/.asm/.elf})"; \
+	    OUTPUT_FILE="$$(echo $${__OUTPUT_FILE/$$FOLDER_SOURCE/$$FOLDER_BINARY})"; \
+	    $(ASM) -o $$OUTPUT_FILE $$SOURCE_FILE $(ASMFLAGS); \
+	    if [ "$$?" != "0" ]; then \
+		echo -e "$$SOURCE_FILE failed"; \
+		exit 1; \
+	    fi; \
+	    echo -e "$$SOURCE_FILE (assembled)"; \
 	done;
 
-	$(LD) -o $(FOLDER_BINARY)/core-minimal/boot.bin -T linker.ld $(FOLDER_BINARY)/core-minimal/base.elf $(OUTPUT_FILES) $(LDFLAGS);
+	for SOURCE_FILE in $(CPP_SOURCE_FILES); do \
+	    SOURCE_FILE="$$(echo $${SOURCE_FILE/.\//})"; \
+	    __OUTPUT_FILE="$$(echo $${SOURCE_FILE/.cpp/.elf})"; \
+	    OUTPUT_FILE="$$(echo $${__OUTPUT_FILE/$$FOLDER_SOURCE/$$FOLDER_BINARY})"; \
+	    $(CXX) -o $$OUTPUT_FILE -c $$SOURCE_FILE $(CXXFLAGS); \
+	    if [ "$$?" != "0" ]; then \
+		echo -e "$$SOURCE_FILE failed"; \
+		exit 1; \
+	    fi; \
+	    echo -e "$$SOURCE_FILE (compiled)"; \
+	done;
+
+	$(LD) -o $(FOLDER_BINARY)/core-minimal/boot.bin -T linker.ld $(ASM_OUTPUT_FILES) $(CPP_OUTPUT_FILES) $(LDFLAGS);
 	echo -e "$(FOLDER_SOURCE)/core-minimal/linker.ld (linked)";
 
 build.check:
