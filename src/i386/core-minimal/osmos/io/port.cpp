@@ -21,39 +21,39 @@
 #include "../osmos.hpp"
 
 void OSMOS::IO::Port::in(uint16_t port, uint8_t *value) {
-	asm("inb ebx, %[port]\n \
-		 mov %[value], ebx"
-	   : [value] "=a" (value)
-	   : [port] "c" (port));
+    asm("inb ebx, %[port]\n \
+         mov %[value], ebx"
+       : [value] "=a" (value)
+       : [port] "c" (port));
 }
 
 void OSMOS::IO::Port::in(uint16_t port, uint16_t *value) {
-	asm("inw bx, %[port]\n \
-		 mov %[value], bx"
-	   : [value] "=a" (value)
-	   : [port] "c" (port));
+    asm("inw bx, %[port]\n \
+         mov %[value], bx"
+       : [value] "=a" (value)
+       : [port] "c" (port));
 }
 
 void OSMOS::IO::Port::in(uint16_t port, uint32_t *value) {
-	asm("ind bl, %[port]\n \
-		 mov %[value], bl"
-	   : [value] "=a" (value)
-	   : [port] "c" (port));
+    asm("ind bl, %[port]\n \
+         mov %[value], bl"
+       : [value] "=a" (value)
+       : [port] "c" (port));
 }
 
 void OSMOS::IO::Port::out(uint16_t port, uint8_t value) {
-	asm("outb %[port], %[value]"
-	   :
-	   : [port] "d" (port), [value] "a" (value));
+    asm("outb %[port], %[value]"
+       :
+       : [port] "d" (port), [value] "a" (value));
 }
 
 void OSMOS::IO::Port::out(uint16_t port, uint16_t value) {
-	asm("outw %[port], %[value]"
-	   :
-	   : [port] "d" (port), [value] "a" (value));	
+    asm("outw %[port], %[value]"
+       :
+       : [port] "d" (port), [value] "a" (value));    
 }
 void OSMOS::IO::Port::out(uint16_t port, uint32_t value) {
-	asm("outd %[port], %[value]"
-	   :
-	   : [port] "d" (port), [value] "a" (value));
+    asm("outd %[port], %[value]"
+       :
+       : [port] "d" (port), [value] "a" (value));
 }

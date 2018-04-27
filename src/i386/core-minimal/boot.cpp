@@ -22,17 +22,17 @@
 
 extern "C"
 void kboot(uint32_t magic, uint32_t table_address) {
-	OSMOS::IO::Port::out((uint16_t) 0x3F8 + 1, (uint8_t) 0x00);
-	OSMOS::IO::Port::out((uint16_t) 0x3F8 + 3, (uint8_t) 0x80);
-	OSMOS::IO::Port::out((uint16_t) 0x3F8 + 0, (uint8_t) 0x03);
-	OSMOS::IO::Port::out((uint16_t) 0x3F8 + 1, (uint8_t) 0x00);
-	OSMOS::IO::Port::out((uint16_t) 0x3F8 + 3, (uint8_t) 0x03);
-	OSMOS::IO::Port::out((uint16_t) 0x3F8 + 2, (uint8_t) 0xC7);
-	OSMOS::IO::Port::out((uint16_t) 0x3F8 + 4, (uint8_t) 0x0B);
+    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 1, (uint8_t) 0x00);
+    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 3, (uint8_t) 0x80);
+    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 0, (uint8_t) 0x03);
+    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 1, (uint8_t) 0x00);
+    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 3, (uint8_t) 0x03);
+    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 2, (uint8_t) 0xC7);
+    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 4, (uint8_t) 0x0B);
 
-	OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) 'H');
-	OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) 'i');
-	OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '!');
-	OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '\n');
-	OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '\r');	
+    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) 'H');
+    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) 'i');
+    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '!');
+    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '\n');
+    OSMOS::IO::Port::out((uint16_t) 0x3F8, (uint8_t) '\r');    
 }

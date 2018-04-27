@@ -29,7 +29,7 @@ namespace OSMOS {
          */
         class Port {
         public:
-        	/**
+            /**
              * Receives a byte-sized value from port
              * @param port the port to communicate
              * @param value the value pointer to assign
@@ -48,7 +48,7 @@ namespace OSMOS {
              */
             static void in(uint16_t port, uint32_t *value);
             
-			/**
+            /**
              * Sends a byte-sized value from port
              * @param port the port to communicate
              * @param value the value to send
@@ -60,7 +60,7 @@ namespace OSMOS {
              * @param value the value to send
              */
             static void out(uint16_t port, uint16_t value);
-			/**
+            /**
              * Sends a double word-sized value from port
              * @param port the port to communicate
              * @param value the value to send

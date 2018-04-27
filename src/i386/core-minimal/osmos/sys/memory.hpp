@@ -62,7 +62,7 @@ namespace OSMOS {
              */
             static uint16_t BLOCK_MAGIC_VALUE;
 
-			/**
+            /**
              * The Block header, which is placed before the actual data stored
              * inside
              */
@@ -88,7 +88,7 @@ namespace OSMOS {
                  * the compiler's warning
                  */
                 uint8_t size;
-			} __attribute__((packed));
+            } __attribute__((packed));
 
             /**
              * Fills the memory from the specified pointer to the specified size
