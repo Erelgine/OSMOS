@@ -1,4 +1,4 @@
-; crti for i386 processors
+; crtn for i386 processors
 ; Copyright (C) 2018 Alexis BELMONTE
 ;
 ; This program is free software: you can redistribute it and/or modify
@@ -17,15 +17,11 @@
 bits 32
 
 section .init
-global _init
-_init:
-    push ebp
-    mov ebp, esp
-    ; GCC will put the contents of crti's .init section here
+    ; GCC will put the contents of crtn's .init section here
+    pop ebp
+    ret
 
 section .fini
-global _fini
-_fini:
-    push ebp
-    mov ebp, esp
-    ; GCC will put the contents of crti's .fini section here
+    ; GCC will put the contents of crtn's .fini section here
+    pop ebp
+    ret

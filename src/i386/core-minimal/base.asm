@@ -20,8 +20,8 @@
 section .multiboot
 header_start:
     align 4
-    HEADER_MAGIC             dd 0xE85250D6
-    ARCHITECTURE_TYPE         dd 0x0
+    HEADER_MAGIC               dd 0xE85250D6
+    ARCHITECTURE_TYPE          dd 0x0
     HEADER_SIZE                dd (header_end - header_start)
     HEADER_CHECKSUM            dd 0x100000000 - (0xE85250D6 + 0 + (header_end - header_start))
 
