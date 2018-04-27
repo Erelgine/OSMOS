@@ -22,37 +22,37 @@
 #include "../osmos.hpp"
 
 namespace OSMOS {
-	namespace System {
+    namespace System {
         /**
          * The Memory class, which contains controls for easy memory
          * manipulation such as filling, copying. It also contains memory
          * allocation functions which permits the usage of <b>new</b> and
          * <b>delete<b> for variables and arrays
          */
-		class Memory {
-		public:
+        class Memory {
+        public:
             /**
              * The <i>used</i> status indicates that the block is used by the kernel
              * or userspace and cannot be allocated, unless it is freed
              */
-			static uint8_t BLOCK_STATUS_USED;
+            static uint8_t BLOCK_STATUS_USED;
             /**
              * The <i>reserved</i> status indicates that the block is reserved by
              * the kernel (reserving for the userspace is denied) and cannot be
              * freed or allocated by the kernel or userspace
              */
-			static uint8_t BLOCK_STATUS_RESERVED;
+            static uint8_t BLOCK_STATUS_RESERVED;
 
             /**
              * The <i>data</i> type indicates that the block contains only data that
              * cannot be executed by the processor
              */
-			static uint8_t BLOCK_TYPE_DATA;
+            static uint8_t BLOCK_TYPE_DATA;
             /**
              * The <i>code</i> type indicates that the block contains only readable
              * code that can be executed by the processor
              */
-			static uint8_t BLOCK_TYPE_CODE;
+            static uint8_t BLOCK_TYPE_CODE;
             
             /**
              * The <i>magic</i> value to check first when you access a block. Compare
@@ -66,7 +66,7 @@ namespace OSMOS {
              * The Block header, which is placed before the actual data stored
              * inside
              */
-			struct Block {
+            struct Block {
                 /**
                  * The <i>magic</i> field, which always holds the value <u>0xB6A0</u>
                  * and indicates that the block is valid. If the magic header
@@ -80,14 +80,14 @@ namespace OSMOS {
                  * operation is recommended, but compare only a value one by one or
                  * you may not obtain what you expect
                  */
-				uint8_t flags:4;
+                uint8_t flags:4;
                 /**
                  * The <i>size</i> field, which holds the size virtually. If you want
                  * to get the real block size in bytes, you need to do the following
                  * operation: 2 ^ (<b>size</b> + 6). The parenthesis is only to suppress
                  * the compiler's warning
                  */
-				uint8_t size;
+                uint8_t size;
 			} __attribute__((packed));
 
             /**
@@ -97,7 +97,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-			static void fill(uint8_t *ptr, uint32_t size, uint8_t val);
+            static void fill(uint8_t *ptr, uint32_t size, uint8_t val);
             /**
              * Fills the memory from the specified pointer to the specified size
              * with a word-sized value
@@ -105,7 +105,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-			static void fill(uint16_t *ptr, uint32_t size, uint16_t val);
+            static void fill(uint16_t *ptr, uint32_t size, uint16_t val);
             /**
              * Fills the memory from the specified pointer to the specified size
              * with a double word-sized value
@@ -113,7 +113,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-			static void fill(uint32_t *ptr, uint32_t size, uint32_t val);
+            static void fill(uint32_t *ptr, uint32_t size, uint32_t val);
             /**
              * Fills the memory from the specified pointer to the specified size
              * with a quad word-sized value
@@ -121,7 +121,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-			static void fill(uint64_t *ptr, uint32_t size, uint64_t val);
+            static void fill(uint64_t *ptr, uint32_t size, uint64_t val);
 
             /**
              * Copies the memory from the source pointer to the target pointer
@@ -130,7 +130,7 @@ namespace OSMOS {
              * @param source
              * @param size
              */
-			static void copy(uint8_t *target, uint8_t *source, uint32_t size);
+            static void copy(uint8_t *target, uint8_t *source, uint32_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified word-size
@@ -138,7 +138,7 @@ namespace OSMOS {
              * @param source
              * @param size
              */
-			static void copy(uint16_t *target, uint16_t *source, uint32_t size);
+            static void copy(uint16_t *target, uint16_t *source, uint32_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified double word-size
@@ -146,7 +146,7 @@ namespace OSMOS {
              * @param source
              * @param size
              */
-			static void copy(uint32_t *target, uint32_t *source, uint32_t size);
+            static void copy(uint32_t *target, uint32_t *source, uint32_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified quad word-size
@@ -154,7 +154,7 @@ namespace OSMOS {
              * @param source
              * @param size
              */
-			static void copy(uint64_t *target, uint64_t *source, uint32_t size);
+            static void copy(uint64_t *target, uint64_t *source, uint32_t size);
             
             /**
              * Checks the given block if it is valid
@@ -197,8 +197,8 @@ namespace OSMOS {
              * @return the size in bytes of the block
              */
             static uint64_t getSize(OSMOS::System::Memory::Block *block);
-		};
-	};
+        };
+    };
 };
 
 #endif
