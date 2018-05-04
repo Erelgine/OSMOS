@@ -19,6 +19,7 @@
 #ifndef MEMORY_HPP
 #define MEMORY_HPP
 
+#include <stddef.h>
 #include "../osmos.hpp"
 
 namespace OSMOS {
@@ -34,11 +35,11 @@ namespace OSMOS {
             /**
              * The base address of the memory block allocation frame
              */
-            static address_t BLOCK_BASE_ADDRESS;
+            static size_t BLOCK_BASE_ADDRESS;
             /**
              * The limit address of the memory block allocation frame
              */
-            static address_t BLOCK_LIMIT_ADDRESS;
+            static size_t BLOCK_LIMIT_ADDRESS;
             
         public:
             /**
@@ -112,7 +113,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-            static void fill(uint8_t *ptr, uint32_t size, uint8_t val);
+            static void fill(uint8_t *ptr, size_t size, uint8_t val);
             /**
              * Fills the memory from the specified pointer to the specified size
              * with a word-sized value
@@ -120,7 +121,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-            static void fill(uint16_t *ptr, uint32_t size, uint16_t val);
+            static void fill(uint16_t *ptr, size_t size, uint16_t val);
             /**
              * Fills the memory from the specified pointer to the specified size
              * with a double word-sized value
@@ -128,7 +129,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-            static void fill(uint32_t *ptr, uint32_t size, uint32_t val);
+            static void fill(uint32_t *ptr, size_t size, uint32_t val);
             /**
              * Fills the memory from the specified pointer to the specified size
              * with a quad word-sized value
@@ -136,7 +137,7 @@ namespace OSMOS {
              * @param size the size to fill
              * @param val the value to fill
              */
-            static void fill(uint64_t *ptr, uint32_t size, uint64_t val);
+            static void fill(uint64_t *ptr, size_t size, uint64_t val);
 
             /**
              * Copies the memory from the source pointer to the target pointer
@@ -145,7 +146,7 @@ namespace OSMOS {
              * @param source the source to copy from
              * @param size the size to copy
              */
-            static void copy(uint8_t *target, uint8_t *source, uint32_t size);
+            static void copy(uint8_t *target, uint8_t *source, size_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified word-size
@@ -153,7 +154,7 @@ namespace OSMOS {
              * @param source the source to copy from
              * @param size the size to copy
              */
-            static void copy(uint16_t *target, uint16_t *source, uint32_t size);
+            static void copy(uint16_t *target, uint16_t *source, size_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified double word-size
@@ -161,7 +162,7 @@ namespace OSMOS {
              * @param source the source to copy from
              * @param size the size to copy
              */
-            static void copy(uint32_t *target, uint32_t *source, uint32_t size);
+            static void copy(uint32_t *target, uint32_t *source, size_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified quad word-size
@@ -169,31 +170,31 @@ namespace OSMOS {
              * @param source the source to copy from
              * @param size the size to copy
              */
-            static void copy(uint64_t *target, uint64_t *source, uint32_t size);
+            static void copy(uint64_t *target, uint64_t *source, size_t size);
 
             /**
              * Sets the base address of the memory allocation frame
              * @param address the base address of the memory allocation frame
              **/
-            static void setBaseAddress(address_t address);
+            static void setBaseAddress(size_t address);
 
             /**
              * Sets the limit address of the memory allocation frame
              * @param address the base address of the memory allocation frame
              **/
-            static void setLimitAddress(address_t address);
+            static void setLimitAddress(size_t address);
             
             /**
              * Gets the base address of the memory allocation frame
              * @return the base address of the memory allocation frame
              **/
-            static address_t getBaseAddress();
+            static size_t getBaseAddress();
 
             /**
              * Gets the limit address of the memory allocation frame
              * @return the base address of the memory allocation frame
              **/
-            static address_t getLimitAddress();
+            static size_t getLimitAddress();
             
             /**
              * Checks the given block if it is valid
@@ -250,38 +251,38 @@ namespace OSMOS {
              * @param size the available size to obtain
              * @return the address of the available block
              */
-            static address_t findAvailableBlock(address_t start, uint64_t size);
+            static size_t findAvailableBlock(size_t start, uint64_t size);
             /**
              * Finds an available block for allocation
              * @param size the size
              * @return the address of the available block
              **/
-            static address_t findAvailableBlock(uint64_t size);
+            static size_t findAvailableBlock(uint64_t size);
             /**
              * Finds an allocated block
              * @param start the address to start from
              * @return the address of the allocated block
              **/
-            static address_t findAllocatedBlock(address_t start);
+            static size_t findAllocatedBlock(size_t start);
             /**
              * Finds an block from it's encapsulated pointer
              * @param pointer the encapsulated pointer to find from
              * @return the address of the allocated block
              **/
-            static address_t findBlock(address_t pointer);
+            static size_t findBlock(size_t pointer);
             /**
              * Finds an available block for use and allocate it
              * @param size the size of the block to allocate
              * @param flags the flags/properties to set for the block
              * @return the address of the block's actual data access section
              **/
-            static address_t allocateBlock(address_t size, uint8_t flags);
+            static size_t allocateBlock(size_t size, uint8_t flags);
             /**
              * Finds an available block for use and allocate it
              * @param size the size of the block to allocate
              * @return the address of the block's actual data access section
              **/
-            static address_t allocateBlock(address_t size);
+            static size_t allocateBlock(size_t size);
             /**
              * Frees a block and mark it as available
              * @param block the block to free
@@ -291,9 +292,20 @@ namespace OSMOS {
              * Frees a block from it's encapsulated pointer and mark it as available
              * @param pointer the pointer encapsulated by the block
              **/
-            static void freeBlock(address_t pointer);
+            static void freeBlock(size_t pointer);
         };
     };
 };
+
+/**
+ * The following is the most needed part of the entire core-minimal and core-base kernel
+ **/
+
+void *operator new(size_t size);
+void *operator new[](size_t size);
+void operator delete(void *pointer);
+void operator delete[](void *pointer);
+void operator delete(void *pointer, size_t size);
+void operator delete[](void *pointer, size_t size);
 
 #endif

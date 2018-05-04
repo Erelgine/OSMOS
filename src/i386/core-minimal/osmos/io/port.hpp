@@ -28,6 +28,9 @@ namespace OSMOS {
          * operations on the hardware
          **/
         class Port {
+        private:
+            uint16_t port;
+
         public:
             /**
              * @brief Receives a byte-sized value from the specified
@@ -51,7 +54,7 @@ namespace OSMOS {
              **/
             static void in(uint16_t port, uint32_t *value);
             /**
-             * @brief Receives a string terminating with the character \0
+             * @brief Receives a string terminating with a NULL character
              * from the specified port
              * @param port the port to communicate
              * @param str the string to read
@@ -82,6 +85,59 @@ namespace OSMOS {
              * @param str the string to send
              **/
             static void out(uint16_t port, const char *str);
+
+            /**
+             * @brief Creates a Port that can do input/output operations
+             * @param port the port to use
+             **/
+            Port(uint16_t port);
+            /**
+             * @brief Gets the communicating port address
+             * @return the address of the port
+             **/
+            uint16_t getPortAddress();
+
+            /**
+             * @brief Receives a byte-sized value
+             * @param value the value pointer to assign
+             **/
+            void in(uint8_t *value);
+            /**
+             * @brief Receives a word-sized value
+             * @param value the value pointer to assign
+             **/
+            void in(uint16_t *value);
+            /**
+             * @brief Receives a dword-sized value
+             * @param value the value pointer to assign
+             **/
+            void in(uint32_t *value);
+            /**
+             * @brief Receives a string terminating with a NULL character
+             * @param value the value pointer to assign
+             **/
+            void in(char *str);
+
+            /**
+             * @brief Sends a byte-sized value
+             * @param value the value to send
+             **/
+            void out(uint8_t value);
+            /**
+             * @brief Sends a word-sized value
+             * @param value the value to send
+             **/
+            void out(uint16_t value);
+            /**
+             * @brief Sends a dword-sized value
+             * @param value the value to send
+             **/
+            void out(uint32_t value);
+            /**
+             * @brief Sends a string terminating with a NULL character
+             * @param value the value to send
+             **/
+            void out(const char *str);
         };
     };
 };

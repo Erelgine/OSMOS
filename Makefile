@@ -144,7 +144,7 @@ build.clean:
 build.system:
 	# Build the system by searching all "makefile"s in source directory
 	echo -e "Building OSMOS system...";
-	for SUB_MAKEFILE in $$(find $(FOLDER_SOURCE)/ -type f -name "makefile" -exec echo -en {} \;); do \
+	for SUB_MAKEFILE in $$(find $(FOLDER_SOURCE)/ -type f -name "Makefile" -exec echo -en {} \;); do \
 		echo -e "Calling $$SUB_MAKEFILE..."; \
 		$(MAKE) -C $$(dirname $$SUB_MAKEFILE) build; \
 	done;

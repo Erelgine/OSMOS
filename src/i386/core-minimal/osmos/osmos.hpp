@@ -42,6 +42,9 @@ typedef uint32_t                         address_t;
 #define MAX_INTEGER                      2 ^ 32
 
 // The null definition, which is essential for a lot of things
+#ifdef NULL
+    #undef NULL
+#endif
 #define NULL                             0
 
 // All namespaces comments should be defined here

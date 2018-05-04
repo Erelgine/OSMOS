@@ -75,3 +75,43 @@ void OSMOS::IO::Port::out(uint16_t port, const char *str) {
     for (int i = 0; str[i] != '\0'; i++)
         OSMOS::IO::Port::out(port, (uint8_t) str[i]);
 }
+
+OSMOS::IO::Port::Port(uint16_t port) {
+    this->port = port;
+}
+
+uint16_t OSMOS::IO::Port::getPortAddress() {
+    return this->port;
+}
+
+void OSMOS::IO::Port::in(uint8_t *value) {
+    OSMOS::IO::Port::in(this->port, value);
+}
+
+void OSMOS::IO::Port::in(uint16_t *value) {
+    OSMOS::IO::Port::in(this->port, value);
+}
+
+void OSMOS::IO::Port::in(uint32_t *value) {
+    OSMOS::IO::Port::in(this->port, value);
+}
+
+void OSMOS::IO::Port::in(char *str) {
+    OSMOS::IO::Port::in(this->port, str);
+}
+
+void OSMOS::IO::Port::out(uint8_t value) {
+    OSMOS::IO::Port::out(this->port, value);
+}
+
+void OSMOS::IO::Port::out(uint16_t value) {
+    OSMOS::IO::Port::out(this->port, value);
+}
+
+void OSMOS::IO::Port::out(uint32_t value) {
+    OSMOS::IO::Port::out(this->port, value);
+}
+
+void OSMOS::IO::Port::out(const char *str) {
+    OSMOS::IO::Port::out(this->port, str);
+}
