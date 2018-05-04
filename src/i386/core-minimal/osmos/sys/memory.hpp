@@ -298,7 +298,8 @@ namespace OSMOS {
 };
 
 /**
- * The following is the most needed part of the entire core-minimal and core-base kernel
+ * The following is the most needed part of the entire core-minimal and core-base kernel.
+ * It permits the creation and destroy of objects, which is mandatory for a C++ kernel.
  **/
 
 void *operator new(size_t size);
