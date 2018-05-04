@@ -19,47 +19,51 @@
 
 section .multiboot
 header_start:
-	align 4
-	HEADER_MAGIC 			dd 0xE85250D6
-	ARCHITECTURE_TYPE 		dd 0x0
-	HEADER_SIZE				dd (header_end - header_start)
-	HEADER_CHECKSUM			dd 0x100000000 - (0xE85250D6 + 0 + (header_end - header_start))
+    align 4
+    HEADER_MAGIC               dd 0xE85250D6
+    ARCHITECTURE_TYPE          dd 0x0
+    HEADER_SIZE                dd (header_end - header_start)
+    HEADER_CHECKSUM            dd 0x100000000 - (0xE85250D6 + 0 + (header_end - header_start))
 
-	dw 0																; Type
-    dw 0																; Flags
-    dd 8																; Size
+    dw 0                                                                ; Type
+    dw 0                                                                ; Flags
+    dd 8                                                                ; Size
 header_end:
 
 ; The stack, pretty much easy. Just allocating 32 KB of memory for it.
 section .bss
-	align 16
-	stack_bottom:
-	resb 32767 															; 32 KB stacksize
-	stack_top:
+    align 16
+    stack_bottom:
+    resb 32767                                                             ; 32 KB stacksize
+    stack_top:
 
 ; The code. Here, we tell to NASM that we know that kmain is already defined, and also
 ; say that _start is accessible to GCC
 section .text
-	extern kboot
-	global _start:function (_start.end - _start)
+    extern kboot
+    global _start:function (_start.end - _start)
 
 _start:
 ; We move the stack onto ESP, put the multiboot header address, and then call kmain !
-	mov esp, stack_top
+    mov esp, stack_top
 
-	push ebx	; Push the pointer to the Multiboot structure
-	push eax	; Push the magic value
+    push ebx    ; Push the pointer to the Multiboot structure
+    push eax    ; Push the magic value
 
-	call kboot
+    call kboot
 
 ; Out of kmain, we want to stop the CPU. First, we clear the interrupts.
-	cli
+    cli
 
 .end:
 ; We want to halt the CPU.
-	hlt
+    hlt
 ; It didn't work, so we jump infinitly here.
-	jmp $
+    jmp $
 ; It didn't work again, so we restart to the beggining
-	jmp .end
+    jmp .end
 ; And if it DIDN'T work, the CPU is bad :(
+
+global _eof
+_eof:
+; The EOF section, only for the base Memory allocator
