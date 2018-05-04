@@ -146,6 +146,10 @@ address_t OSMOS::System::Memory::findAvailableBlock(address_t start, uint64_t si
     return (address_t) (found ? aBlock : NULL);
 }
 
+address_t OSMOS::System::Memory::findAvailableBlock(uint64_t size) {
+    return OSMOS::System::Memory::findAvailableBlock(OSMOS::System::Memory::BLOCK_BASE_ADDRESS, size);
+}
+
 address_t OSMOS::System::Memory::findAllocatedBlock(address_t start) {
     OSMOS::System::Memory::Block *currentBlock = (OSMOS::System::Memory::Block *) start;
     bool found = false;
@@ -163,10 +167,6 @@ address_t OSMOS::System::Memory::findAllocatedBlock(address_t start) {
     }
 
     return (address_t) (found ? currentBlock : NULL);
-}
-
-address_t OSMOS::System::Memory::findAvailableBlock(uint64_t size) {
-    return OSMOS::System::Memory::findAvailableBlock(OSMOS::System::Memory::BLOCK_BASE_ADDRESS, size);
 }
 
 address_t OSMOS::System::Memory::findBlock(address_t pointer) {

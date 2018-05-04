@@ -32,9 +32,13 @@ namespace OSMOS {
         class Memory {
         private:
             /**
-             * The base address of the memory block allocation
+             * The base address of the memory block allocation frame
              */
             static address_t BLOCK_BASE_ADDRESS;
+            /**
+             * The limit address of the memory block allocation frame
+             */
+            static address_t BLOCK_LIMIT_ADDRESS;
             
         public:
             /**
@@ -137,35 +141,59 @@ namespace OSMOS {
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified byte-size
-             * @param target
-             * @param source
-             * @param size
+             * @param target the target to paste from
+             * @param source the source to copy from
+             * @param size the size to copy
              */
             static void copy(uint8_t *target, uint8_t *source, uint32_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified word-size
-             * @param target
-             * @param source
-             * @param size
+             * @param target the target to paste from
+             * @param source the source to copy from
+             * @param size the size to copy
              */
             static void copy(uint16_t *target, uint16_t *source, uint32_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified double word-size
-             * @param target
-             * @param source
-             * @param size
+             * @param target the target to paste from
+             * @param source the source to copy from
+             * @param size the size to copy
              */
             static void copy(uint32_t *target, uint32_t *source, uint32_t size);
             /**
              * Copies the memory from the source pointer to the target pointer
              * with the specified quad word-size
-             * @param target
-             * @param source
-             * @param size
+             * @param target the target to paste from
+             * @param source the source to copy from
+             * @param size the size to copy
              */
             static void copy(uint64_t *target, uint64_t *source, uint32_t size);
+
+            /**
+             * Sets the base address of the memory allocation frame
+             * @param address the base address of the memory allocation frame
+             **/
+            static void setBaseAddress(address_t address);
+
+            /**
+             * Sets the limit address of the memory allocation frame
+             * @param address the base address of the memory allocation frame
+             **/
+            static void setLimitAddress(address_t address);
+            
+            /**
+             * Gets the base address of the memory allocation frame
+             * @return the base address of the memory allocation frame
+             **/
+            static address_t getBaseAddress();
+
+            /**
+             * Gets the limit address of the memory allocation frame
+             * @return the base address of the memory allocation frame
+             **/
+            static address_t getLimitAddress();
             
             /**
              * Checks the given block if it is valid
@@ -204,17 +232,66 @@ namespace OSMOS {
             static bool isCode(OSMOS::System::Memory::Block *block);
             
             /**
-             * Finds an available block for allocation
-             * @return the address of the available block ready to be casted
-             */
-            address_t findAvailableBlock();
-            
+             * Gets the size of the block
+             * @param block the block to access
+             * @return the size in bytes of the block
+             **/
+            static uint64_t getBlockSize(OSMOS::System::Memory::Block *block);
             /**
              * Gets the size of the given block
              * @param block the block to access
              * @return the size in bytes of the block
              */
             static uint64_t getSize(OSMOS::System::Memory::Block *block);
+
+            /**
+             * Finds an available block for allocation
+             * @param start the address to start from
+             * @param size the available size to obtain
+             * @return the address of the available block
+             */
+            static address_t findAvailableBlock(address_t start, uint64_t size);
+            /**
+             * Finds an available block for allocation
+             * @param size the size
+             * @return the address of the available block
+             **/
+            static address_t findAvailableBlock(uint64_t size);
+            /**
+             * Finds an allocated block
+             * @param start the address to start from
+             * @return the address of the allocated block
+             **/
+            static address_t findAllocatedBlock(address_t start);
+            /**
+             * Finds an block from it's encapsulated pointer
+             * @param pointer the encapsulated pointer to find from
+             * @return the address of the allocated block
+             **/
+            static address_t findBlock(address_t pointer);
+            /**
+             * Finds an available block for use and allocate it
+             * @param size the size of the block to allocate
+             * @param flags the flags/properties to set for the block
+             * @return the address of the block's actual data access section
+             **/
+            static address_t allocateBlock(address_t size, uint8_t flags);
+            /**
+             * Finds an available block for use and allocate it
+             * @param size the size of the block to allocate
+             * @return the address of the block's actual data access section
+             **/
+            static address_t allocateBlock(address_t size);
+            /**
+             * Frees a block and mark it as available
+             * @param block the block to free
+             **/
+            static void freeBlock(OSMOS::System::Memory::Block *block);
+            /**
+             * Frees a block from it's encapsulated pointer and mark it as available
+             * @param pointer the pointer encapsulated by the block
+             **/
+            static void freeBlock(address_t pointer);
         };
     };
 };
