@@ -67,7 +67,7 @@ build.base:
 
 build.check:
 	echo -en "Checking if binary is multiboot compliant... ";
-	grub-file --is-x86-multiboot2 $(FOLDER_BINARY)/core-minimal//boot.bin; \
+	$(GRUB_NAME)-file --is-x86-multiboot2 $(FOLDER_BINARY)/core-minimal/boot.bin; \
 	if [ "$$?" == "0" ]; then \
 		echo -e "compliant-ok done"; \
 	else \
@@ -78,10 +78,10 @@ build.check:
 build.cpkernel:
 	echo -en "Copying kernel core... ";
 	if [ -d $(FOLDER_VDRIVE) ]; then \
-		if [ -d $(FOLDER_VDRIVE)/boot/core/ ]; then sudo rm -rf $(FOLDER_VDRIVE)/boot/core/; fi; \
-		sudo mkdir $(FOLDER_VDRIVE)/boot/core/; \
+		if [ -d $(FOLDER_VDRIVE)/boot/core/ ]; then $(SUDO) rm -rf $(FOLDER_VDRIVE)/boot/core/; fi; \
+		$(SUDO) mkdir -p $(FOLDER_VDRIVE)/boot/core/; \
 		echo -en "mkdir "; \
-		sudo cp -f $(FOLDER_BINARY)/core-minimal//boot.bin $(FOLDER_VDRIVE)/boot/core/boot.bin; \
+		$(SUDO) cp -f $(FOLDER_BINARY)/core-minimal/boot.bin $(FOLDER_VDRIVE)/boot/core/boot.bin; \
 		echo -e "cpcore done"; \
 	else \
 		echo -e "fail: vdrive not mounted"; \

@@ -41,6 +41,19 @@ void OSMOS::IO::Port::in(uint16_t port, uint32_t *value) {
        : [port] "c" (port));
 }
 
+void OSMOS::IO::Port::in(uint16_t port, char *str) {
+    uint8_t character = 0xFF;
+
+    for (int i = 0; character != 0; i++) {
+        OSMOS::IO::Port::in(port, &character);
+
+        if (character == 0)
+            break;
+        else
+            str[i] = character;
+    }
+}
+
 void OSMOS::IO::Port::out(uint16_t port, uint8_t value) {
     asm("outb %[port], %[value]"
        :
@@ -56,4 +69,9 @@ void OSMOS::IO::Port::out(uint16_t port, uint32_t value) {
     asm("outd %[port], %[value]"
        :
        : [port] "d" (port), [value] "a" (value));
+}
+
+void OSMOS::IO::Port::out(uint16_t port, const char *str) {
+    for (int i = 0; str[i] != '\0'; i++)
+        OSMOS::IO::Port::out(port, (uint8_t) str[i]);
 }
