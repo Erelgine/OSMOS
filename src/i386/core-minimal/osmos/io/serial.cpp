@@ -105,6 +105,9 @@ void OSMOS::IO::SerialPort::setup(uint16_t address, uint32_t baudrate, uint8_t w
     modReg->sendRequest = true;
     modReg->autoflowEnabled = true;
     OSMOS::IO::SerialPort::setModemControlRegister(modReg);
+
+    uint16_t *screen = (uint16_t *) 0xB8000;
+    screen[3] = 0xF040;
 }
 
 OSMOS::IO::SerialPort::SerialPort(uint16_t address, uint32_t baudrate, uint8_t wLength, uint8_t parity) {

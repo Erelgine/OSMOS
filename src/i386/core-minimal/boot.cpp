@@ -35,19 +35,12 @@ void kboot(uint32_t magic, uint32_t table_address) {
     OSMOS::System::Memory::setBaseAddress(baseAddress);
     OSMOS::System::Memory::setLimitAddress(baseAddress + 512 * 1024);
 
-    //OSMOS::IO::SerialPort *debug = new OSMOS::IO::SerialPort(OSMOS::IO::SerialPort::COMMUNICATION_PORT_1);
-    //debug->out("Hello, this is a test message !");
-
-    OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 1, (uint8_t) 0x00);
-	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 3, (uint8_t) 0x80); /* Enable divisor mode */
-	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 0, (uint8_t) 0x03); /* Div Low:  03 Set the port to 38400 bps */
-	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 1, (uint8_t) 0x00); /* Div High: 00 */
-	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 3, (uint8_t) 0x03);
-	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 2, (uint8_t) 0xC7);
-	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 4, (uint8_t) 0x0B);
-    
-    OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1, "POURQUOI CA MARCHE PAS... !!!");
-
     uint16_t *screen = (uint16_t *) 0xB8000;
     screen[0] = 0xF040;
+
+    OSMOS::IO::SerialPort *debug = new OSMOS::IO::SerialPort(OSMOS::IO::SerialPort::COMMUNICATION_PORT_1);
+    debug->out("Hello, this is a test message !");
+    screen[1] = 0xF040;
+
+    screen[2] = 0xF040;
 }

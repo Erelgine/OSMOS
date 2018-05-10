@@ -17,6 +17,8 @@
 ; The multiboot2 header, necessary in order to tell to GRUB that it is a valid
 ; boot binary. Labels are lowercase while variables/data are UPPERCASE.
 
+%include "osmos/sys/cpp/cs.asm"
+
 section .multiboot
 header_start:
     align 4
@@ -25,9 +27,9 @@ header_start:
     HEADER_SIZE                dd (header_end - header_start)
     HEADER_CHECKSUM            dd 0x100000000 - (0xE85250D6 + 0 + (header_end - header_start))
 
-    dw 0                                                                ; Type
-    dw 0                                                                ; Flags
-    dd 8                                                                ; Size
+    dw 0                                                                   ; Type
+    dw 0                                                                   ; Flags
+    dd 8                                                                   ; Size
 header_end:
 
 ; The stack, pretty much easy. Just allocating 32 KB of memory for it.
@@ -37,22 +39,28 @@ section .bss
     resb 32767                                                             ; 32 KB stacksize
     stack_top:
 
-; The code. Here, we tell to NASM that we know that kmain is already defined, and also
+; The code. Here, we tell to NASM that we know that kboot is already defined, and also
 ; say that _start is accessible to GCC
 section .text
     extern kboot
     global _start:function (_start.end - _start)
 
 _start:
-; We move the stack onto ESP, put the multiboot header address, and then call kmain !
+; We move the stack onto ESP, put the multiboot header address, and then call kboot !
     mov esp, stack_top
+
+    ; Call constructors before jumping into the C function
+    call cs_call
 
     push ebx    ; Push the pointer to the Multiboot structure
     push eax    ; Push the magic value
 
     call kboot
 
-; Out of kmain, we want to stop the CPU. First, we clear the interrupts.
+    ; Call destructors after exiting from the C function
+    call ds_call
+
+; Out of kboot, we want to stop the CPU. First, we clear the interrupts.
     cli
 
 .end:
