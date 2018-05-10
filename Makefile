@@ -6,8 +6,8 @@
 # Global settings for Make, the interpreter, the path and sudo:
 MAKEFLAGS             += --silent
 SHELL                 := /usr/bin/bash
-PATH				  := /usr/bin:/usr/local/bin:/usr/sbin:/bin:/sbin
-SUDO                   = sudo
+PATH                  := /usr/bin:/usr/local/bin:/usr/sbin:/bin:/sbin
+SUDO                   = sudo -S
 
 # Project binary requisites:
 PROJECT_ARCH           = i386
@@ -36,6 +36,7 @@ export MAKEFLAGS
 export SHELL
 export PATH
 export SUDO
+export SUDO_ASKPASS
 
 export PROJECT_ARCH
 export PROJECT_BASE

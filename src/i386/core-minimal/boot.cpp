@@ -1,5 +1,9 @@
+/**
+ * @file core-minimal/boot.cpp
+ * @brief The initial main point of the core-minimal kernel
+ **/
+
 /*
- * The boot file
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +22,7 @@
 
 #include "osmos/osmos.hpp"
 
-#include "osmos/io/port.hpp"
+#include "osmos/io/serial.hpp"
 #include "osmos/sys/memory.hpp"
 
 extern "C"
@@ -29,16 +33,21 @@ void kboot(uint32_t magic, uint32_t table_address) {
        : [base] "a" (baseAddress));
 
     OSMOS::System::Memory::setBaseAddress(baseAddress);
-    OSMOS::System::Memory::setLimitAddress(baseAddress + 128 * 1024);
+    OSMOS::System::Memory::setLimitAddress(baseAddress + 512 * 1024);
 
-    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 1, (uint8_t) 0x00);
-    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 3, (uint8_t) 0x80);
-    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 0, (uint8_t) 0x03);
-    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 1, (uint8_t) 0x00);
-    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 3, (uint8_t) 0x03);
-    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 2, (uint8_t) 0xC7);
-    OSMOS::IO::Port::out((uint16_t) 0x3F8 + 4, (uint8_t) 0x0B);
+    //OSMOS::IO::SerialPort *debug = new OSMOS::IO::SerialPort(OSMOS::IO::SerialPort::COMMUNICATION_PORT_1);
+    //debug->out("Hello, this is a test message !");
 
-    OSMOS::IO::Port *sDebug = new OSMOS::IO::Port(0x3F8);
-    sDebug->out("Welcome to OSMOS (todo: add version incrementation)\r\n");
+    OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 1, (uint8_t) 0x00);
+	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 3, (uint8_t) 0x80); /* Enable divisor mode */
+	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 0, (uint8_t) 0x03); /* Div Low:  03 Set the port to 38400 bps */
+	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 1, (uint8_t) 0x00); /* Div High: 00 */
+	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 3, (uint8_t) 0x03);
+	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 2, (uint8_t) 0xC7);
+	OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1 + 4, (uint8_t) 0x0B);
+    
+    OSMOS::IO::Port::out((uint16_t) OSMOS::IO::SerialPort::COMMUNICATION_PORT_1, "POURQUOI CA MARCHE PAS... !!!");
+
+    uint16_t *screen = (uint16_t *) 0xB8000;
+    screen[0] = 0xF040;
 }

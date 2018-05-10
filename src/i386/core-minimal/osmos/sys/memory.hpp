@@ -1,5 +1,9 @@
+/**
+ * @file core-minimal/osmos/sys/memory.hpp
+ * @brief The main header for the Memory class
+ **/
+
 /*
- * The memory allocation class
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify

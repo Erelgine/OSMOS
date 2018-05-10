@@ -1,5 +1,9 @@
+/**
+ * @file core-minimal/osmos/sys/memory.cpp
+ * @brief The main code for the Memory class
+ **/
+
 /*
- * The memory allocation class
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify
@@ -157,16 +161,14 @@ size_t OSMOS::System::Memory::findAllocatedBlock(size_t start) {
     OSMOS::System::Memory::Block *currentBlock = (OSMOS::System::Memory::Block *) start;
     bool found = false;
 
-    uint64_t size = 0;
-    for (size_t address = start; address < OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS; address += size) {
+    for (size_t address = start; address < OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS;) {
         currentBlock = (OSMOS::System::Memory::Block *) address;
-        size = OSMOS::System::Memory::getBlockSize(currentBlock);
+        uint64_t size = OSMOS::System::Memory::getBlockSize(currentBlock);
 
         if (size != NULL) {
-            found = true;
             break;
         } else
-            size = 2 ^ 6;
+            address += 2 ^ 6;
     }
 
     return (size_t) (found ? currentBlock : NULL);
@@ -178,16 +180,16 @@ size_t OSMOS::System::Memory::findBlock(size_t pointer) {
     
     OSMOS::System::Memory::Block *currentBlock;
 
-    uint64_t size = 0;
-    for (size_t address = OSMOS::System::Memory::BLOCK_BASE_ADDRESS; address < OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS; address += size) {
+    for (size_t address = OSMOS::System::Memory::BLOCK_BASE_ADDRESS; address < OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS;) {
         currentBlock = (OSMOS::System::Memory::Block *) address;
-        size = 2 ^ 6;
+        uint64_t size = OSMOS::System::Memory::getBlockSize(currentBlock);
 
-        if (OSMOS::System::Memory::isValid(currentBlock)) {
-            size = OSMOS::System::Memory::getBlockSize(currentBlock);
-            if (size != NULL && OSMOS::System::Memory::isAllocated(currentBlock) && address + OSMOS::System::Memory::getBlockSize(currentBlock) > pointer && address < pointer)
+        if (size != NULL) {
+            if (address + OSMOS::System::Memory::getBlockSize(currentBlock) > pointer && address < pointer)
                 return (size_t) currentBlock;
         }
+
+        address += 2 ^ 6;
     }
 
     return NULL;

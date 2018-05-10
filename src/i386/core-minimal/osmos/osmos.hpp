@@ -4,7 +4,6 @@
  **/
 
 /*
- * The OSMOS header
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,9 +36,6 @@ typedef signed long                      int64_t;
 
 // Processor specific address size
 typedef uint32_t                         address_t;
-
-// Highest number the processor can handle natively
-#define MAX_INTEGER                      2 ^ 32
 
 // The null definition, which is essential for a lot of things
 #ifdef NULL

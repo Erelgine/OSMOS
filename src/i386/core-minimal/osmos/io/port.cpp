@@ -1,5 +1,9 @@
+/**
+ * @file core-minimal/osmos/io/port.cpp
+ * @brief The main code for the Port class
+ **/
+
 /*
- * The I/O port communication class
  * Copyright (C) 2018 Alexis BELMONTE
  *
  * This program is free software: you can redistribute it and/or modify
