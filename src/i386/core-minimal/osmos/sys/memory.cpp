@@ -25,242 +25,149 @@
 #include <stddef.h>
 #include "../osmos.hpp"
 
-size_t OSMOS::System::Memory::BLOCK_BASE_ADDRESS         = 0;
-size_t OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS        = 0;
+size_t OSMOS::System::Memory::Management::Area::LOWER_ADDRESS           = 0x00100000;
+size_t OSMOS::System::Memory::Management::Area::UPPER_ADDRESS           = 0x00EFFFFF;
 
-uint16_t OSMOS::System::Memory::BLOCK_MAGIC_VALUE           = 0xB6A0;
+const uint16_t OSMOS::System::Memory::Management::BLOCK_MAGIC_VALUE     = 0xF8F7;
 
-uint8_t OSMOS::System::Memory::BLOCK_STATUS_USED            = 0b0001;
-uint8_t OSMOS::System::Memory::BLOCK_STATUS_RESERVED        = 0b0010;
-
-uint8_t OSMOS::System::Memory::BLOCK_TYPE_DATA              = 0b0100;
-uint8_t OSMOS::System::Memory::BLOCK_TYPE_CODE              = 0b1000;
-
-void OSMOS::System::Memory::fill(uint8_t *ptr, size_t size, uint8_t val) {
+void OSMOS::System::Memory::Access::fill(void *ptr, size_t size, uint8_t val) {
+    uint8_t *cptr = (uint8_t *) ptr;
     for (size_t i = 0; i < size; i++)
-        ptr[i] = val;
+        cptr[i] = val;
 }
 
-void OSMOS::System::Memory::fill(uint16_t *ptr, size_t size, uint16_t val) {
-    for (size_t i = 0; i < size; i += 2)
-        ptr[i] = val;
-}
-
-void OSMOS::System::Memory::fill(uint32_t *ptr, size_t size, uint32_t val) {
-    for (size_t i = 0; i < size; i += 4)
-        ptr[i] = val;
-}
-
-void OSMOS::System::Memory::fill(uint64_t *ptr, size_t size, uint64_t val) {
-    for (size_t i = 0; i < size; i += 8)
-        ptr[i] = val;
-}
-
-void OSMOS::System::Memory::copy(uint8_t *target, uint8_t *source, size_t size) {
+void OSMOS::System::Memory::Access::copy(void *target, void *source, size_t size) {
+    uint8_t *ctarget = (uint8_t*) target;
+    uint8_t *csource = (uint8_t *) source;
     for (size_t i = 0; i < size; i++)
-        target[i] = source[i];
+        ctarget[i] = csource[i];
 }
 
-void OSMOS::System::Memory::copy(uint16_t *target, uint16_t *source, size_t size) {
-    for (size_t i = 0; i < size; i++)
-        target[i] = source[i];
+void OSMOS::System::Memory::Management::Area::getArea(size_t *lowerAddress, size_t *upperAddress) {
+    *lowerAddress = OSMOS::System::Memory::Management::Area::LOWER_ADDRESS;
+    *upperAddress = OSMOS::System::Memory::Management::Area::UPPER_ADDRESS;
 }
 
-void OSMOS::System::Memory::copy(uint32_t *target, uint32_t *source, size_t size) {
-    for (size_t i = 0; i < size; i++)
-        target[i] = source[i];
+void OSMOS::System::Memory::Management::Area::setArea(size_t lowerAddress, size_t upperAddress) {
+    if (upperAddress < lowerAddress || OSMOS::System::Memory::Management::Area::getAllocatedSize() > (upperAddress - lowerAddress))
+        return;
+
+    OSMOS::System::Memory::Management::Area::LOWER_ADDRESS = lowerAddress;
+    OSMOS::System::Memory::Management::Area::UPPER_ADDRESS = upperAddress;
 }
 
-void OSMOS::System::Memory::copy(uint64_t *target, uint64_t *source, size_t size) {
-    for (size_t i = 0; i < size; i++)
-        target[i] = source[i];
-}
+uint64_t OSMOS::System::Memory::Management::Area::getAllocatedSize() {
+    uint64_t size = 0;
 
-void OSMOS::System::Memory::setBaseAddress(size_t address) {
-    if (address != NULL)
-        OSMOS::System::Memory::BLOCK_BASE_ADDRESS = address;
-}
-
-void OSMOS::System::Memory::setLimitAddress(size_t address) {
-    if (address != NULL)
-        OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS = address;
-}
-
-size_t OSMOS::System::Memory::getBaseAddress() {
-    return OSMOS::System::Memory::BLOCK_BASE_ADDRESS;
-}
-
-size_t OSMOS::System::Memory::getLimitAddress() {
-    return OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS;
-}
-
-bool OSMOS::System::Memory::isValid(OSMOS::System::Memory::Block* block) {
-    return block->magic == OSMOS::System::Memory::BLOCK_MAGIC_VALUE;
-}
-
-bool OSMOS::System::Memory::isAllocated(OSMOS::System::Memory::Block *block) {
-    return OSMOS::System::Memory::isValid(block) && (block->flags & OSMOS::System::Memory::BLOCK_STATUS_USED);
-}
-
-bool OSMOS::System::Memory::isReserved(OSMOS::System::Memory::Block *block) {
-    return OSMOS::System::Memory::isValid(block) && (block->flags & OSMOS::System::Memory::BLOCK_STATUS_RESERVED);
-}
-
-bool OSMOS::System::Memory::isData(OSMOS::System::Memory::Block *block) {
-    return OSMOS::System::Memory::isValid(block) && (block->flags & OSMOS::System::Memory::BLOCK_TYPE_DATA);
-}
-
-bool OSMOS::System::Memory::isCode(OSMOS::System::Memory::Block *block) {
-    return OSMOS::System::Memory::isValid(block) && (block->flags & OSMOS::System::Memory::BLOCK_TYPE_CODE);
-}
-
-uint64_t OSMOS::System::Memory::getBlockSize(OSMOS::System::Memory::Block *block) {
-    return (OSMOS::System::Memory::isAllocated(block) ? 2 ^ (block->size + 6) : NULL);
-}
-
-uint64_t OSMOS::System::Memory::getSize(OSMOS::System::Memory::Block *block) {
-    return OSMOS::System::Memory::getBlockSize(block) - sizeof(OSMOS::System::Memory::Block);
-}
-
-size_t OSMOS::System::Memory::findAvailableBlock(size_t start, uint64_t size) {
-    OSMOS::System::Memory::Block* aBlock = (OSMOS::System::Memory::Block *) start;
-    bool found = false;
-
-    if (size == 0 || start > OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS || size > OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS - OSMOS::System::Memory::BLOCK_BASE_ADDRESS)
-        return NULL;
-
-    uint64_t aSize;
-    for (size_t address = start; address < OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS; address += aSize) {
-        aBlock = (OSMOS::System::Memory::Block *) address;
-        aSize = OSMOS::System::Memory::getBlockSize(aBlock);
-        
-        if (!OSMOS::System::Memory::isAllocated(aBlock)) {
-            size_t nbAddress = OSMOS::System::Memory::findAllocatedBlock(address);
-            OSMOS::System::Memory::Block *nextBlock = (OSMOS::System::Memory::Block *) (nbAddress != NULL ? nbAddress : address);
-            
-            if (OSMOS::System::Memory::isAllocated(nextBlock)) {
-                if (nbAddress != NULL && nbAddress - address < size)
-                    continue;
-            }
-
-            found = true;
-            break;
+    for (size_t address = OSMOS::System::Memory::Management::Area::LOWER_ADDRESS;
+                address < OSMOS::System::Memory::Management::Area::UPPER_ADDRESS;
+                address += sizeof(OSMOS::System::Memory::Management::Block) + 1)
+        if (OSMOS::System::Memory::Management::isBlockAllocated((OSMOS::System::Memory::Management::Block *) address)) {
+            OSMOS::System::Memory::Management::Block *block = (OSMOS::System::Memory::Management::Block *) address;
+            size += block->size;
         }
 
-        address += size;
-    }
-    
-    return (size_t) (found ? aBlock : NULL);
+    return size;
 }
 
-size_t OSMOS::System::Memory::findAvailableBlock(uint64_t size) {
-    return OSMOS::System::Memory::findAvailableBlock(OSMOS::System::Memory::BLOCK_BASE_ADDRESS, size);
+uint64_t OSMOS::System::Memory::Management::Area::getAllocatedCount() {
+    uint64_t count = 0;
+
+    for (size_t address = OSMOS::System::Memory::Management::Area::LOWER_ADDRESS;
+                address < OSMOS::System::Memory::Management::Area::UPPER_ADDRESS;
+                address += sizeof(OSMOS::System::Memory::Management::Block) + 1)
+        if (OSMOS::System::Memory::Management::isBlockAllocated((OSMOS::System::Memory::Management::Block *) address))
+            count++;
+
+    return count;
 }
 
-size_t OSMOS::System::Memory::findAllocatedBlock(size_t start) {
-    OSMOS::System::Memory::Block *currentBlock = (OSMOS::System::Memory::Block *) start;
-    bool found = false;
-
-    for (size_t address = start; address < OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS;) {
-        currentBlock = (OSMOS::System::Memory::Block *) address;
-        uint64_t size = OSMOS::System::Memory::getBlockSize(currentBlock);
-
-        if (size != NULL) {
-            break;
-        } else
-            address += 2 ^ 6;
-    }
-
-    return (size_t) (found ? currentBlock : NULL);
+bool OSMOS::System::Memory::Management::isBlockAllocated(OSMOS::System::Memory::Management::Block *block) {
+    return (block->magic == OSMOS::System::Memory::Management::BLOCK_MAGIC_VALUE) && block->isAllocated;
 }
 
-size_t OSMOS::System::Memory::findBlock(size_t pointer) {
-    if (pointer < OSMOS::System::Memory::BLOCK_BASE_ADDRESS || pointer > OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS)
-        return NULL;
-    
-    OSMOS::System::Memory::Block *currentBlock;
+size_t OSMOS::System::Memory::Management::findBlock(size_t startAddress, bool allocated, uint64_t size) {
+    size_t lowerAddress, upperAddress = 0;
+    OSMOS::System::Memory::Management::Area::getArea(&lowerAddress, &upperAddress);
 
-    for (size_t address = OSMOS::System::Memory::BLOCK_BASE_ADDRESS; address < OSMOS::System::Memory::BLOCK_LIMIT_ADDRESS;) {
-        currentBlock = (OSMOS::System::Memory::Block *) address;
-        uint64_t size = OSMOS::System::Memory::getBlockSize(currentBlock);
-
-        if (size != NULL) {
-            if (address + OSMOS::System::Memory::getBlockSize(currentBlock) > pointer && address < pointer)
-                return (size_t) currentBlock;
+    for (size_t address = startAddress; address < upperAddress;
+        address += sizeof(OSMOS::System::Memory::Management::Block) + 1) {
+        OSMOS::System::Memory::Management::Block *block = (OSMOS::System::Memory::Management::Block *) address;
+        if (allocated && OSMOS::System::Memory::Management::isBlockAllocated(block) && size == NULL)
+            return address;
+        else if (!allocated && !OSMOS::System::Memory::Management::isBlockAllocated(block)) {
+            size_t nBlock = OSMOS::System::Memory::Management::findBlock(address, true);
+            if (nBlock == NULL || nBlock - address > size + sizeof(OSMOS::System::Memory::Management::Block) + 1)
+                return address;
         }
-
-        address += 2 ^ 6;
     }
 
     return NULL;
 }
 
-size_t OSMOS::System::Memory::allocateBlock(size_t size, uint8_t flags) {
-    size_t blockAddress = OSMOS::System::Memory::findAvailableBlock(size);
+size_t OSMOS::System::Memory::Management::findBlock(size_t startAddress, bool allocated) {
+    return OSMOS::System::Memory::Management::findBlock(startAddress, allocated, NULL);
+}
 
+size_t OSMOS::System::Memory::Management::allocateBlock(uint64_t size) {
+    if (size < 1)
+        return NULL;
+
+    size_t lowerAddress, upperAddress = 0;
+    OSMOS::System::Memory::Management::Area::getArea(&lowerAddress, &upperAddress);
+
+    size_t blockAddress = OSMOS::System::Memory::Management::findBlock(lowerAddress, false, size);
     if (blockAddress == NULL)
         return NULL;
 
-    OSMOS::System::Memory::Block *block = (OSMOS::System::Memory::Block *) blockAddress;
-    block->magic = OSMOS::System::Memory::BLOCK_MAGIC_VALUE;
-    block->flags = (flags & 0b1110) | OSMOS::System::Memory::BLOCK_STATUS_USED;
-    uint8_t cSize = 0;
-    for (; cSize < 32; cSize++)
-        if (size < (uint64_t) (2 ^ (cSize + 6)))
-            break;
-    block->size = cSize;
+    OSMOS::System::Memory::Management::Block *block = (OSMOS::System::Memory::Management::Block *) blockAddress;
+    block->magic = OSMOS::System::Memory::Management::BLOCK_MAGIC_VALUE;
+    block->isAllocated = true;
+    block->size = size;
 
-    return blockAddress + sizeof(OSMOS::System::Memory::Block);
+    return blockAddress + sizeof(OSMOS::System::Memory::Management::Block);
 }
 
-size_t OSMOS::System::Memory::allocateBlock(size_t size) {
-    return OSMOS::System::Memory::allocateBlock(size, OSMOS::System::Memory::BLOCK_TYPE_DATA);
-}
+bool OSMOS::System::Memory::Management::deallocateBlock(size_t address, uint64_t size) {
+    size_t lowerAddress, upperAddress = 0;
+    OSMOS::System::Memory::Management::Area::getArea(&lowerAddress, &upperAddress);
 
-void OSMOS::System::Memory::freeBlock(OSMOS::System::Memory::Block *block) {
-    if (block->flags & OSMOS::System::Memory::BLOCK_STATUS_RESERVED)
-        return;
-    
-    block->flags |= OSMOS::System::Memory::BLOCK_STATUS_USED;
-}
+    if (address < lowerAddress || address > upperAddress)
+        return false;
 
-void OSMOS::System::Memory::freeBlock(size_t pointer) {
-    size_t blockb = OSMOS::System::Memory::findBlock(pointer);
+    size_t blockAddress = address;
+    if (!OSMOS::System::Memory::Management::isBlockAllocated((OSMOS::System::Memory::Management::Block *) address)) {
+        if (!OSMOS::System::Memory::Management::isBlockAllocated((OSMOS::System::Memory::Management::Block *) address - sizeof(OSMOS::System::Memory::Management::Block)))
+            return false;
+        else
+            blockAddress -= sizeof(OSMOS::System::Memory::Management::Block);
+    }
 
-    if (blockb == NULL)
-        return;
-    
-    OSMOS::System::Memory::freeBlock(blockb);
+    OSMOS::System::Memory::Access::fill((uint8_t *) blockAddress, size, NULL);
+
+    return true;
 }
 
 void *operator new(size_t size) {
-    return (void *) OSMOS::System::Memory::allocateBlock(size, OSMOS::System::Memory::BLOCK_TYPE_CODE);
+    return (void *) OSMOS::System::Memory::Management::allocateBlock(size);
 }
 
 void *operator new[](size_t size) {
-    return (void *) OSMOS::System::Memory::allocateBlock(size, OSMOS::System::Memory::BLOCK_TYPE_DATA);
+    return (void *) OSMOS::System::Memory::Management::allocateBlock(size);
 }
 
 void operator delete(void *pointer) {
-    OSMOS::System::Memory::freeBlock((size_t) pointer);
+    OSMOS::System::Memory::Management::deallocateBlock((size_t) pointer, NULL);
 }
 
 void operator delete[](void *pointer) {
-    OSMOS::System::Memory::freeBlock((size_t) pointer);
+    OSMOS::System::Memory::Management::deallocateBlock((size_t) pointer, NULL);
 }
 
 void operator delete(void *pointer, size_t size) {
-    size_t ablocka = OSMOS::System::Memory::findBlock((size_t) pointer);
-    if (ablocka == NULL)
-        return;
-    OSMOS::System::Memory::Block *ablock = (OSMOS::System::Memory::Block *) ablocka;
-    uint64_t ablocksize = OSMOS::System::Memory::getSize(ablock);
-    if (ablocksize != size)
-        OSMOS::System::Memory::fill((uint8_t *) pointer, size, NULL);
-    else
-        OSMOS::System::Memory::freeBlock((size_t) pointer);
+    OSMOS::System::Memory::Management::deallocateBlock((size_t) pointer, size);
 }
 
 void operator delete[](void *pointer, size_t size) {
-    operator delete(pointer, size);
+    OSMOS::System::Memory::Management::deallocateBlock((size_t) pointer, size);
 }

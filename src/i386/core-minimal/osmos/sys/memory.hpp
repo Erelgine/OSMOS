@@ -29,274 +29,144 @@
 namespace OSMOS {
     namespace System {
         /**
-         * The Memory class, which contains controls for easy memory
-         * manipulation such as filling, copying. It also contains memory
-         * allocation functions which permits the usage of <b>new</b> and
-         * <b>delete<b> for variables and arrays
+         * @namespace OSMOS::System
+         * @name Memory
+         * @brief The <code>Memory</code> namespace contains memory access
          */
-        class Memory {
-        private:
+        namespace Memory {
             /**
-             * The base address of the memory block allocation frame
-             */
-            static size_t BLOCK_BASE_ADDRESS;
-            /**
-             * The limit address of the memory block allocation frame
-             */
-            static size_t BLOCK_LIMIT_ADDRESS;
-            
-        public:
-            /**
-             * Initializes the Memory class
-             */
-            static void initialize();
-            
-            /**
-             * The <i>used</i> status indicates that the block is used by the kernel
-             * or userspace and cannot be allocated, unless it is freed
-             */
-            static uint8_t BLOCK_STATUS_USED;
-            /**
-             * The <i>reserved</i> status indicates that the block is reserved by
-             * the kernel (reserving for the userspace is denied) and cannot be
-             * freed or allocated by the kernel or userspace
-             */
-            static uint8_t BLOCK_STATUS_RESERVED;
-
-            /**
-             * The <i>data</i> type indicates that the block contains only data that
-             * cannot be executed by the processor
-             */
-            static uint8_t BLOCK_TYPE_DATA;
-            /**
-             * The <i>code</i> type indicates that the block contains only readable
-             * code that can be executed by the processor
-             */
-            static uint8_t BLOCK_TYPE_CODE;
-            
-            /**
-             * The <i>magic</i> value to check first when you access a block. Compare
-             * this value with the value of your current structure to be sure this is
-             * a valid structure; but it is more recommended that you use the function
-             * isBlockValid in order to check accuratly if the structure is valid Block
-             */
-            static uint16_t BLOCK_MAGIC_VALUE;
-
-            /**
-             * The Block header, which is placed before the actual data stored
-             * inside
-             */
-            struct Block {
+             * @brief The Access class, which contains functions for memory manipulation
+             * such as filling and copying
+             **/
+            class Access {
+            public:
                 /**
-                 * The <i>magic</i> field, which always holds the value <u>0xB6A0</u>
-                 * and indicates that the block is valid. If the magic header
-                 * is not the following value, the kernel considerates that the
-                 * block is available for allocation by the kernel or userspace
+                 * @brief Fills the memory from the specified pointer to the specified size
+                 * with a byte-sized value
+                 * @param ptr the pointer to the memory to fill
+                 * @param size the size to fill
+                 * @param val the value to fill
                  */
-                uint16_t magic; 
+                static void fill(void *ptr, size_t size, uint8_t val);
+
                 /**
-                 * The <i>flags</i> field, which holds both the status and the type of
-                 * the block. If you want to compare them, an <b>and</b> bitwise
-                 * operation is recommended, but compare only a value one by one or
-                 * you may not obtain what you expect
+                 * @brief Copies the memory from the source pointer to the target pointer
+                 * with the specified byte-size
+                 * @param target the target to paste from
+                 * @param source the source to copy from
+                 * @param size the size to copy
                  */
-                uint8_t flags:4;
+                static void copy(void *target, void *source, size_t size);
+            };
+
+            /**
+             * @brief The Management class, which the contains memory allocation engine,
+             * the Frame structure and the Block structure
+             **/
+            class Management {
+            public:
+                class Area {
+                public:
+                    /**
+                     * @brief The lower address of the allocation area. See the public
+                     * function <i>Management::setArea(...)</i> in order to alter the
+                     * private values
+                     **/
+                    static size_t LOWER_ADDRESS;
+                    /**
+                     * @brief The upper address of the allocation area. See the public
+                     * function <i>Management::setArea(...)</i> in order to alter the
+                     * private values
+                     **/
+                    static size_t UPPER_ADDRESS;
+
+                    /**
+                     * @brief Gets the memory allocation area
+                     * @param lowerAddress the start point of the memory allocation area
+                     * @param upperAddress the end point of the memory allocation area
+                     **/
+                    static void getArea(size_t *lowerAddress, size_t *upperAddress);
+                    /**
+                     * @brief Sets the memory allocation area
+                     * @param lowerAddress the start point of the memory allocation area
+                     * @param upperAddress the end point of the memory allocation area
+                     **/
+                    static void setArea(size_t lowerAddress, size_t upperAddress);
+
+                    /**
+                     * @brief Gets the number of allocated blocks.
+                     * @return the number of allocated blocks
+                     **/
+                    static uint64_t getAllocatedCount();
+                    /**
+                     * @brief Gets the size of all allocated blocks.
+                     * @return the size of all allocated blocks
+                     **/
+                    static uint64_t getAllocatedSize();
+                };
+
+
                 /**
-                 * The <i>size</i> field, which holds the size virtually. If you want
-                 * to get the real block size in bytes, you need to do the following
-                 * operation: 2 ^ (<b>size</b> + 6). The parenthesis is only to suppress
-                 * the compiler's warning
-                 */
-                uint8_t size;
-            } __attribute__((packed));
+                 * @brief The magic value of the block, to check if the block is valid.
+                 * The <i>Block->magic</i> field should be always of this constant value
+                 **/
+                static const uint16_t BLOCK_MAGIC_VALUE;
 
-            /**
-             * Fills the memory from the specified pointer to the specified size
-             * with a byte-sized value
-             * @param ptr the pointer to the memory to fill
-             * @param size the size to fill
-             * @param val the value to fill
-             */
-            static void fill(uint8_t *ptr, size_t size, uint8_t val);
-            /**
-             * Fills the memory from the specified pointer to the specified size
-             * with a word-sized value
-             * @param ptr the pointer to the memory to fill
-             * @param size the size to fill
-             * @param val the value to fill
-             */
-            static void fill(uint16_t *ptr, size_t size, uint16_t val);
-            /**
-             * Fills the memory from the specified pointer to the specified size
-             * with a double word-sized value
-             * @param ptr the pointer to the memory to fill
-             * @param size the size to fill
-             * @param val the value to fill
-             */
-            static void fill(uint32_t *ptr, size_t size, uint32_t val);
-            /**
-             * Fills the memory from the specified pointer to the specified size
-             * with a quad word-sized value
-             * @param ptr the pointer to the memory to fill
-             * @param size the size to fill
-             * @param val the value to fill
-             */
-            static void fill(uint64_t *ptr, size_t size, uint64_t val);
+                /**
+                 * @brief The Block structure, describes the size and allocation status
+                 * of the block
+                 **/
+                struct Block {
+                    /**
+                     * @brief The magic field, to check if the block is valid or not.
+                     * Compare this field with the static constant value in the same
+                     * class
+                     **/
+                    uint16_t magic;
+                    /**
+                     * @brief The size field, which indicates the size of the allocated
+                     * block
+                     **/
+                    uint64_t size;
+                    /**
+                     * @brief The allocation state field, which indicates if the block
+                     * is allocated. Before checking this value, 
+                     **/
+                    bool isAllocated;
+                } __attribute__((packed));
 
-            /**
-             * Copies the memory from the source pointer to the target pointer
-             * with the specified byte-size
-             * @param target the target to paste from
-             * @param source the source to copy from
-             * @param size the size to copy
-             */
-            static void copy(uint8_t *target, uint8_t *source, size_t size);
-            /**
-             * Copies the memory from the source pointer to the target pointer
-             * with the specified word-size
-             * @param target the target to paste from
-             * @param source the source to copy from
-             * @param size the size to copy
-             */
-            static void copy(uint16_t *target, uint16_t *source, size_t size);
-            /**
-             * Copies the memory from the source pointer to the target pointer
-             * with the specified double word-size
-             * @param target the target to paste from
-             * @param source the source to copy from
-             * @param size the size to copy
-             */
-            static void copy(uint32_t *target, uint32_t *source, size_t size);
-            /**
-             * Copies the memory from the source pointer to the target pointer
-             * with the specified quad word-size
-             * @param target the target to paste from
-             * @param source the source to copy from
-             * @param size the size to copy
-             */
-            static void copy(uint64_t *target, uint64_t *source, size_t size);
+                /**
+                 * @brief Checks if the specified block is valid and allocated.
+                 * @param block the block to check
+                 * @return the allocation status of the block
+                 **/
+                static bool isBlockAllocated(OSMOS::System::Memory::Management::Block *block);
 
-            /**
-             * Sets the base address of the memory allocation frame
-             * @param address the base address of the memory allocation frame
-             **/
-            static void setBaseAddress(size_t address);
+                /**
+                 * @brief Finds an available or allocated block at the specified starting
+                 * address using
+                 **/
+                static size_t findBlock(size_t startAddress, bool allocated, uint64_t size);
+                /**
+                 * @brief Finds an available or allocated block at the specified starting
+                 * address
+                 **/
+                static size_t findBlock(size_t startAddress, bool allocated);
 
-            /**
-             * Sets the limit address of the memory allocation frame
-             * @param address the base address of the memory allocation frame
-             **/
-            static void setLimitAddress(size_t address);
-            
-            /**
-             * Gets the base address of the memory allocation frame
-             * @return the base address of the memory allocation frame
-             **/
-            static size_t getBaseAddress();
-
-            /**
-             * Gets the limit address of the memory allocation frame
-             * @return the base address of the memory allocation frame
-             **/
-            static size_t getLimitAddress();
-            
-            /**
-             * Checks the given block if it is valid
-             * @param block the block to check
-             * @return a positive value if the block is valid or a negative
-             * value if the block is bad or unallocated
-             */
-            static bool isValid(OSMOS::System::Memory::Block *block);
-            /**
-             * Checks the given block if it is allocated or not
-             * @param block the block to check
-             * @return a positive value if the block is allocated or a negative
-             * value if the block is freed
-             */
-            static bool isAllocated(OSMOS::System::Memory::Block *block);
-            /**
-             * Checks the given block if it is reserved or not by the kernel
-             * @param block the block to check
-             * @return a positive value if the block is reserved by the kernel
-             * or a negative value is the block is not reserved by the kernel
-             */
-            static bool isReserved(OSMOS::System::Memory::Block *block);
-            /**
-             * Checks the given block if it contains data
-             * @param block the block to check
-             * @return a positive value if the block contains data or a
-             * negative value if the block contains other than data
-             */
-            static bool isData(OSMOS::System::Memory::Block *block);
-            /**
-             * Checks the given block if it contains code
-             * @param block the block to check
-             * @return a positive value if the block contains code or a
-             * negative value if the block contains other than code
-             */
-            static bool isCode(OSMOS::System::Memory::Block *block);
-            
-            /**
-             * Gets the size of the block
-             * @param block the block to access
-             * @return the size in bytes of the block
-             **/
-            static uint64_t getBlockSize(OSMOS::System::Memory::Block *block);
-            /**
-             * Gets the size of the given block
-             * @param block the block to access
-             * @return the size in bytes of the block
-             */
-            static uint64_t getSize(OSMOS::System::Memory::Block *block);
-
-            /**
-             * Finds an available block for allocation
-             * @param start the address to start from
-             * @param size the available size to obtain
-             * @return the address of the available block
-             */
-            static size_t findAvailableBlock(size_t start, uint64_t size);
-            /**
-             * Finds an available block for allocation
-             * @param size the size
-             * @return the address of the available block
-             **/
-            static size_t findAvailableBlock(uint64_t size);
-            /**
-             * Finds an allocated block
-             * @param start the address to start from
-             * @return the address of the allocated block
-             **/
-            static size_t findAllocatedBlock(size_t start);
-            /**
-             * Finds an block from it's encapsulated pointer
-             * @param pointer the encapsulated pointer to find from
-             * @return the address of the allocated block
-             **/
-            static size_t findBlock(size_t pointer);
-            /**
-             * Finds an available block for use and allocate it
-             * @param size the size of the block to allocate
-             * @param flags the flags/properties to set for the block
-             * @return the address of the block's actual data access section
-             **/
-            static size_t allocateBlock(size_t size, uint8_t flags);
-            /**
-             * Finds an available block for use and allocate it
-             * @param size the size of the block to allocate
-             * @return the address of the block's actual data access section
-             **/
-            static size_t allocateBlock(size_t size);
-            /**
-             * Frees a block and mark it as available
-             * @param block the block to free
-             **/
-            static void freeBlock(OSMOS::System::Memory::Block *block);
-            /**
-             * Frees a block from it's encapsulated pointer and mark it as available
-             * @param pointer the pointer encapsulated by the block
-             **/
-            static void freeBlock(size_t pointer);
+                /**
+                 * @brief Allocates a new available block from the allocation area.
+                 * @param size the size to allocate
+                 * @return the address of the block data section
+                 **/
+                static size_t allocateBlock(uint64_t size);
+                /**
+                 * @brief Deallocates an allocated block from it's specified address
+                 * @param address the address of the block
+                 * @param size the size of the block (less will just fill until size)
+                 * @return the status of the deallocation
+                 **/
+                static bool deallocateBlock(size_t address, uint64_t size);
+            };
         };
     };
 };
