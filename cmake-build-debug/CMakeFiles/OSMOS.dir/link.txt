@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/OSMOS.dir/src/i386/core-minimal/osmos/io/port.cpp.o CMakeFiles/OSMOS.dir/src/i386/core-minimal/osmos/io/serial.cpp.o CMakeFiles/OSMOS.dir/src/i386/core-minimal/osmos/sys/memory.cpp.o CMakeFiles/OSMOS.dir/src/i386/core-minimal/boot.cpp.o  -o OSMOS 

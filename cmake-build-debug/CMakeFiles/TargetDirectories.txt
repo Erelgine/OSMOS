@@ -1,3 +1,0 @@
-/home/alexis/Bureau/OSMOS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/alexis/Bureau/OSMOS/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/alexis/Bureau/OSMOS/cmake-build-debug/CMakeFiles/OSMOS.dir
